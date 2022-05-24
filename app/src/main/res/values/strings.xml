@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Teste</string>
+
+    <string name="logo">Logo</string>
+    <string name="title_products">Produtos</string>
+    <string name="title_category">Categorias</string>
+    <string name="dollar">R$: %s</string>
+    <string name="scroll">Arraste para o lado</string>
+
+    <string name="details_name">Nome:</string>
+    <string name="details_type">Tipo:</string>
+    <string name="details_description">Descricao:</string>
+    <string name="details_brand">Marca:</string>
+    <string name="details_color">Cor:</string>
+    <string name="details_button">Adquirir</string>
+
+    <string name="accessibily_details_back">Voltar</string>
+
+    <string name="not_search">Nenhum Produto Encontrado</string>
+</resources>

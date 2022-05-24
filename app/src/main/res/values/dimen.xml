@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="size_progress">64dp</dimen>
+
+    <dimen name="radius_8">8dp</dimen>
+
+    <dimen name="size_2">2dp</dimen>
+    <dimen name="size_4">4dp</dimen>
+    <dimen name="size_8">8dp</dimen>
+    <dimen name="size_16">16dp</dimen>
+    <dimen name="size_32">32dp</dimen>
+    <dimen name="size_64">64dp</dimen>
+    <dimen name="size_100">100dp</dimen>
+    <dimen name="size_128">128dp</dimen>
+    <dimen name="size_256">256dp</dimen>
+    <dimen name="size_350">350dp</dimen>
+    <dimen name="size_450">450dp</dimen>
+</resources>
