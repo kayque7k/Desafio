@@ -43,6 +43,7 @@ dependencies {
     def compose = "1.1.1"
     def lifecycle_version = "2.4.1"
     def google_version = "2.9.0"
+    def coil = "2.0.0-rc03"
     def insets = "0.24.6-alpha"
     def koin_version = "3.2.0"
 
@@ -62,6 +63,7 @@ dependencies {
     implementation("androidx.compose.material:material:$compose")
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    implementation("io.coil-kt:coil-compose:$coil")
     implementation ("com.squareup.retrofit2:retrofit:$google_version")
     implementation ("com.squareup.retrofit2:converter-gson:$google_version")
 
