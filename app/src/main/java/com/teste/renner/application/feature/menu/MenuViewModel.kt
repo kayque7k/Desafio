@@ -45,7 +45,6 @@ class MenuViewModel(
 
     private fun getProducts(idCategory: Int = DEFAULT_CATEGORY) = viewModelScope.launch {
         uiState.run {
-            listItens.value = emptyList()
             loadingProduct.value = true
             when (val result = productCategoryUseCase.execute(idCategory)) {
                 is Result.Success -> {
