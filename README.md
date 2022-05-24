@@ -24,16 +24,16 @@ eu sempre vou ter acesso as minhas viewmodel, porem nao utilizei o livedata por 
 
 * dependências de koin, realizar injecao de dependencia e inversao de controle para diminuir o acoplamento dos dados
 
-### oque melhoraria ###
+### Oque melhoraria ###
 
 * tornaria os pacotes de commons,coreapi e dsc como modulos independentes.
 
 
-### Oque ha no projeto ###
+### Oque tem no projeto ###
 
 * (x) Testes unitários.
 * (x) arquitetura: Utilizei o MVVM seguindo o clean architecture, por se encaixa com o padrao de programacao reativa do compose juntamente com o flow com o collectAsState,
     e com a viewmodel do lifecycle, sendo uma arquitetura de facil teste ja que todas as logicas ficaram na viewmodel;
 * (x) Material Design: os componentes utilizando o compose tambem seguem fortemente o padrao de Material Design, e ja compoem acessibilidade, os que nao compoem como imagem foi implementado;
-* (x) Utilizar alguma ferramenta de Injeção de Dependência: Koin
-* (x) Utilizei o Flow com o collectAsState ao inves do LiveData para a programacao reativa por se encaixar melhor com o compose e tambem Coroutines para as chamadas externa com funcoes suspend (Caso um dia seja impelementada endpoint para os usecase);
+* (x) Utilizei Koin para Injeção de Dependência
+* (x) Utilizei o Flow com o collectAsState ao inves do LiveData para a programacao reativa por se encaixar melhor com o compose e tambem Coroutines para as chamadas externa com funcoes suspend (Caso um dia seja implementado endpoint para os dados consumidos);
