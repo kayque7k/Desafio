@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "renner"
+rootProject.name = "poc"
 include ':app'
