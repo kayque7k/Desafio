@@ -4,15 +4,24 @@
 
     <dimen name="radius_8">8dp</dimen>
 
+    <dimen name="size_profile">45dp</dimen>
+
     <dimen name="size_2">2dp</dimen>
     <dimen name="size_4">4dp</dimen>
     <dimen name="size_8">8dp</dimen>
     <dimen name="size_16">16dp</dimen>
     <dimen name="size_32">32dp</dimen>
+    <dimen name="size_40">40dp</dimen>
+    <dimen name="size_50">50dp</dimen>
     <dimen name="size_64">64dp</dimen>
+    <dimen name="size_75">75dp</dimen>
     <dimen name="size_100">100dp</dimen>
+    <dimen name="size_110">110dp</dimen>
     <dimen name="size_128">128dp</dimen>
     <dimen name="size_256">256dp</dimen>
     <dimen name="size_350">350dp</dimen>
+    <dimen name="size_370">370dp</dimen>
+    <dimen name="size_400">400dp</dimen>
     <dimen name="size_450">450dp</dimen>
+
 </resources>

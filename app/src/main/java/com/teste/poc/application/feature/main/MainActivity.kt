@@ -2,18 +2,20 @@ package com.teste.poc.application.feature.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.teste.poc.R
 import com.teste.poc.application.feature.detail.DetailPageScreen
 import com.teste.poc.application.feature.detail.DetailViewModel
-import com.teste.poc.commons.navigartion.composeNavigate
 import com.teste.poc.commons.navigartion.setNavigationContent
 import com.teste.poc.application.feature.main.MainViewModel.Navigation.Detail
 import com.teste.poc.application.feature.main.MainViewModel.Navigation.Menu
 import com.teste.poc.application.feature.main.MainViewModel.Navigation
 import com.teste.poc.application.feature.menu.MenuPageScreen
 import com.teste.poc.application.feature.menu.MenuViewModel
+import com.teste.poc.commons.navigartion.composeNavigate
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +37,8 @@ class MainActivity : AppCompatActivity() {
                 navEvent = ::navEvent
             )
         }
+
+        Toast.makeText(this, getString(R.string.menu_toast), Toast.LENGTH_SHORT).show()
     }
 
     private fun navGraphBuilder(builder: NavGraphBuilder) = builder.apply {

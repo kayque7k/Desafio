@@ -9,4 +9,5 @@ object ColorPalette {
     val SteelGrey @Composable get() = colorResource(id = R.color.steel_grey)
     val CharcoalGrey @Composable get() = colorResource(id = R.color.charcoal_grey)
     val Black @Composable get() = colorResource(id = R.color.black)
+    val PlayMusic @Composable get() = colorResource(id = R.color.play_music)
 }

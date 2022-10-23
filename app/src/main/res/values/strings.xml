@@ -1,20 +1,24 @@
 <resources>
-    <string name="app_name">Poc</string>
+    <string name="app_name">Lovers</string>
+    <string name="menu_toast">Deslize para os lados</string>
 
-    <string name="logo">Logo</string>
-    <string name="title_products">Produtos</string>
-    <string name="title_category">Categorias</string>
-    <string name="dollar">R$: %s</string>
-    <string name="scroll">Arraste para o lado</string>
+    <string name="menu_title_dialog">Area Plus</string>
 
-    <string name="details_name">Nome:</string>
-    <string name="details_type">Tipo:</string>
-    <string name="details_description">Descricao:</string>
-    <string name="details_brand">Marca:</string>
-    <string name="details_color">Cor:</string>
-    <string name="details_button">Adquirir</string>
+    <string name="menu_button_dialog">OK</string>
+    <string name="menu_button_dialog_spotify">Spotify</string>
+
+    <string name="accessibily_menu_profile">Perfil</string>
+    <string name="accessibily_menu_liked">Curtir</string>
+    <string name="accessibily_menu_plus">Plus</string>
+    <string name="accessibily_menu_chat">Chat</string>
 
     <string name="accessibily_details_back">Voltar</string>
+    <string name="accessibily_details_play">Play</string>
+    <string name="accessibily_details_pause">Pause</string>
 
-    <string name="not_search">Nenhum Produto Encontrado</string>
+    <string name="notify_text">Esta musica me lembra voce amor %s</string>
+
+    <string name="path_drawable">drawable</string>
+    <string name="path_raw">raw</string>
+
 </resources>

@@ -1,40 +1,42 @@
 package com.teste.poc.application.injector
 
-import com.teste.poc.application.data.api.CategoryApi
-import com.teste.poc.application.data.api.ProductApi
-import com.teste.poc.application.data.mockapi.CategoryApiMock
-import com.teste.poc.application.data.mockapi.ProductApiMock
-import com.teste.poc.application.data.repository.CategoryRepositoryImpl
-import com.teste.poc.application.data.repository.ProductRepositoryImpl
-import com.teste.poc.application.domain.repository.CategoryRepository
-import com.teste.poc.application.domain.repository.ProductRepository
+import com.google.gson.Gson
+import com.teste.poc.application.data.api.UserApi
+import com.teste.poc.application.data.repository.UserRepositoryImpl
+import com.teste.poc.application.domain.repository.UserRepository
 import com.teste.poc.application.feature.detail.DetailViewModel
 import com.teste.poc.application.feature.main.MainViewModel
 import com.teste.poc.application.feature.menu.MenuViewModel
-import com.teste.poc.application.usecase.CategoryUseCase
-import com.teste.poc.application.usecase.ProductCategoryUseCase
-import com.teste.poc.application.usecase.ProductUseCase
+import com.teste.poc.application.usecase.DetailsPersonUseCase
+import com.teste.poc.application.usecase.UserUseCase
+import com.teste.poc.coreapi.retrofit
+import com.teste.poc.coreapi.session.ISessionOutput
+import com.teste.poc.coreapi.session.ISessioInput
+import com.teste.poc.coreapi.session.Session
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewmodelModule = module {
     viewModel { MainViewModel() }
-    viewModel { MenuViewModel(get(), get()) }
+    viewModel { MenuViewModel(get()) }
     viewModel { DetailViewModel(get()) }
 }
 
 val useCaseModule = module {
-    factory { CategoryUseCase(get()) }
-    factory { ProductCategoryUseCase(get()) }
-    factory { ProductUseCase(get()) }
+    factory { UserUseCase(get()) }
+    factory { DetailsPersonUseCase(get()) }
 }
 
 val repositoryModule = module {
-    factory<CategoryRepository> { CategoryRepositoryImpl(get()) }
-    factory<ProductRepository> { ProductRepositoryImpl(get()) }
+    factory<UserRepository> { UserRepositoryImpl(get(), get(), get()) }
 }
 
 val apiModule = module {
-    factory<CategoryApi> { CategoryApiMock() }
-    factory<ProductApi> { ProductApiMock() }
+    factory<UserApi> { retrofit().create(UserApi::class.java) }
+}
+
+val sessionModule = module {
+    factory<ISessionOutput> { Session(androidContext(), Gson()) }
+    factory<ISessioInput> { Session(androidContext(), Gson()) }
 }

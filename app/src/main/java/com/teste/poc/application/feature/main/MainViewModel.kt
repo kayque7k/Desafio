@@ -10,11 +10,11 @@ import com.teste.poc.commons.extensions.ZERO
 
 class MainViewModel : ViewModel(), EventSender<Navigation> by ChannelEventSenderImpl() {
 
-    var idProduct: Int = ZERO
+    var idLover: Int = ZERO
         private set
 
-    fun setIdProduct(id: Int) {
-        this.idProduct = id
+    fun setIdLover(id: Int) {
+        this.idLover = id
     }
 
     fun startDestination() = Navigation.Menu

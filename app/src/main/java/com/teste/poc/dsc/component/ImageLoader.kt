@@ -1,21 +1,25 @@
 package com.teste.poc.dsc.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.teste.poc.dsc.color.ColorPalette
 import com.teste.poc.dsc.dimen.Size
 
 @Composable
 fun ImageLoader(
     modifier: Modifier = Modifier,
-    imageUrl: String,
+    image: String,
     contentDescription: String,
     backgroundLoader: Color = ColorPalette.Black
 ) = Box {
@@ -37,9 +41,7 @@ fun ImageLoader(
     Image(
         modifier = modifier,
         contentScale = ContentScale.Crop,
-        painter = rememberImagePainter(
-            data = imageUrl
-        ),
+        painter = rememberAsyncImagePainter(image),
         contentDescription = contentDescription
     )
 }

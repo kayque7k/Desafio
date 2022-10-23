@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="charcoal_grey">#383743</color>
     <color name="steel_grey">#748383</color>
+    <color name="play_music">#FF0000</color>
 </resources>

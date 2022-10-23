@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.teste.poc"
-        minSdk 21
+        minSdk 23
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -39,17 +39,19 @@ android {
 }
 
 dependencies {
-    def nav_version = "2.4.2"
+    def nav_version = "2.5.0"
     def compose = "1.1.1"
-    def lifecycle_version = "2.4.1"
+    def lifecycle_version = "2.5.0"
     def google_version = "2.9.0"
     def coil = "2.0.0-rc03"
     def koin_version = "3.2.0"
+    def security_version = "1.0.0"
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation "androidx.security:security-crypto:$security_version"
 
     implementation "io.insert-koin:koin-core:$koin_version"
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
@@ -64,6 +66,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:$coil")
     implementation ("com.squareup.retrofit2:retrofit:$google_version")
     implementation ("com.squareup.retrofit2:converter-gson:$google_version")
+    implementation 'com.github.theapache64:twyper:0.0.4'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.assertj:assertj-core:3.22.0'
