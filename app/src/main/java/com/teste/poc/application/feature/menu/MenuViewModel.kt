@@ -10,14 +10,17 @@ import androidx.lifecycle.viewModelScope
 import com.github.theapache64.twyper.TwyperController
 import com.github.theapache64.twyper.TwyperControllerImpl
 import com.teste.poc.R
+import com.teste.poc.application.feature.detail.DetailViewModel
 import com.teste.poc.application.feature.main.MainViewModel.Navigation
 import com.teste.poc.application.feature.mapper.ItemVOMapper.toItemVO
+import com.teste.poc.application.feature.mapper.ItemVOMapper.toItemVOFilter
 import com.teste.poc.application.feature.menu.MenuViewModel.ScreenEvent
 import com.teste.poc.application.feature.viewobject.ItemCardVO
 import com.teste.poc.application.feature.viewobject.ItemVO
 import com.teste.poc.application.usecase.UserUseCase
 import com.teste.poc.commons.extensions.Result
 import com.teste.poc.commons.extensions.exceptionToast
+import com.teste.poc.commons.extensions.isNull
 import com.teste.poc.commons.viewModel.ChannelEventSenderImpl
 import com.teste.poc.commons.viewModel.EventSender
 import com.teste.poc.coreapi.session.ISessionOutput
@@ -32,7 +35,7 @@ class MenuViewModel(
 
     val uiState = UiState()
 
-    fun getPerson() = uiState.run {
+    fun getPerson(activity: Activity) = uiState.run {
         if (item.value.cardsVO.isNotEmpty() &&
             output.getCode() == item.value.code
         ) {
@@ -43,9 +46,19 @@ class MenuViewModel(
         }
         viewModelScope.launch {
             loadingProduct.value = true
-            when (val result = userUseCase.execute()) {
+            when (val result = userUseCase.execute(
+                load = {
+                    screenState.value = ScreenState.ScreenLoading
+                }
+            )) {
                 is Result.Success -> {
-                    item.value = result.data.toItemVO()
+                    if(result.data.isNull()){
+                        dashboardPopStack(activity = activity)
+                    } else {
+                        result.data?.let {
+                            item.value = it.toItemVO()
+                        }
+                    }
                     screenState.value = ScreenState.ScreenContent
                 }
                 is Result.Failure -> {
@@ -69,7 +82,7 @@ class MenuViewModel(
         twyperController.value.currentCardController?.swipeRight()
     }
 
-    fun onEmpty() = getPerson()
+    fun onEmpty(activity: Activity) = getPerson(activity = activity)
 
     fun onClickInstagram(activity: Activity) = viewModelScope.launch {
         uiState.item.value.instagram.let {
@@ -127,6 +140,11 @@ class MenuViewModel(
 
     fun onClickinsert() = viewModelScope.launch {
         sendEvent(ScreenEvent.NavigateTo(Navigation.Dashboard))
+    }
+
+    private fun dashboardPopStack(activity: Activity) = viewModelScope.launch {
+        exceptionToast(activity, R.string.error_code)
+        sendEvent(event = ScreenEvent.NavigateTo(Navigation.DashboardPopStack))
     }
 
     sealed class ScreenState {

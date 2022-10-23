@@ -11,6 +11,8 @@ const val QUALITY_IMAGE = 100
 
 fun Int?.orZero() = this ?: ZERO
 
+fun Int?.isZero() = this.orZero() == ZERO
+
 fun Any?.isNull(): Boolean = this == null
 
 fun Any?.isNotNull(): Boolean = this != null

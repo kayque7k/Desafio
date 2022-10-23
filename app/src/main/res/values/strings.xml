@@ -58,5 +58,6 @@
     <string name="error_whatssap">Erro ao tentar abrir o whatssap</string>
     <string name="error_spotify">Erro ao tentar abrir o spotify</string>
     <string name="error_youtube">Erro ao tentar abrir o youtube</string>
+    <string name="error_code">Codigo invalido</string>
 
 </resources>

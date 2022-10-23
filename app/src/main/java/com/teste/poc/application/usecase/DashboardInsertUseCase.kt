@@ -2,6 +2,7 @@ package com.teste.poc.application.usecase
 
 import com.teste.poc.application.domain.model.User
 import com.teste.poc.application.domain.repository.UserRepository
+import com.teste.poc.commons.extensions.EMPTY_STRING
 import com.teste.poc.commons.extensions.safeRunDispatcher
 
 class DashboardInsertUseCase(
@@ -9,7 +10,7 @@ class DashboardInsertUseCase(
 ) {
     suspend fun execute(user: User) = safeRunDispatcher {
         user.run {
-            instagram = "$LINK_INSTAGRAM${instagram.replace("@", "").trim()}"
+            instagram = "$LINK_INSTAGRAM${instagram.replace("@", EMPTY_STRING).trim()}"
             userRepository.insert(this)
         }
     }

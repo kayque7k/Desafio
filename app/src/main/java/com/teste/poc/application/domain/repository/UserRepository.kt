@@ -5,7 +5,7 @@ import com.teste.poc.application.domain.model.User
 
 interface UserRepository {
 
-    suspend fun get(code: String): User
+    suspend fun get(code: String, load: () -> Unit): User?
 
     suspend fun insert(insert: User): User
 

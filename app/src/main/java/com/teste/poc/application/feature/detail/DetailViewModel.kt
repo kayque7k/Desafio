@@ -13,8 +13,10 @@ import com.teste.poc.application.feature.main.MainViewModel.Navigation
 import com.teste.poc.application.feature.mapper.ItemVOMapper.toItemVOFilter
 import com.teste.poc.application.feature.viewobject.ItemVO
 import com.teste.poc.application.usecase.DetailsUserUseCase
+import com.teste.poc.commons.extensions.EMPTY_STRING
 import com.teste.poc.commons.extensions.Result
 import com.teste.poc.commons.extensions.exceptionToast
+import com.teste.poc.commons.extensions.isNull
 import com.teste.poc.commons.viewModel.ChannelEventSenderImpl
 import com.teste.poc.commons.viewModel.EventSender
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +29,7 @@ class DetailViewModel(
     companion object {
         private const val EMOJI = "\uD83E\uDD70"
         private const val APP_YOUTUBE = "vnd.youtube:"
+        private const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
     }
 
     val uiState = UiState()
@@ -36,7 +39,15 @@ class DetailViewModel(
     }
 
     fun onClickMusic(activity: Activity, url: String) {
-        val intentApp = Intent(Intent.ACTION_VIEW, Uri.parse("$APP_YOUTUBE$url"))
+        val intentApp = Intent(
+            Intent.ACTION_VIEW, Uri.parse(
+                "$APP_YOUTUBE${
+                    url.replace(
+                        URL_YOUTUBE, EMPTY_STRING
+                    )
+                }"
+            )
+        )
         val intentBrowser = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         try {
             Toast.makeText(
@@ -54,12 +65,22 @@ class DetailViewModel(
         }
     }
 
-    fun getDetails(id: Int) = viewModelScope.launch {
+    fun getDetails(activity: Activity, id: Int) = viewModelScope.launch {
         uiState.run {
             screenState.value = ScreenState.ScreenLoading
-            when (val result = detailsUserUseCase.execute()) {
+            when (val result = detailsUserUseCase.execute(
+                load = {
+                    screenState.value = ScreenState.ScreenLoading
+                }
+            )) {
                 is Result.Success -> {
-                    item.value = result.data.toItemVOFilter(id)
+                    if (result.data.isNull()) {
+                        dashboardPopStack(activity = activity)
+                    } else {
+                        result.data?.let {
+                            item.value = it.toItemVOFilter(id)
+                        }
+                    }
                     screenState.value = ScreenState.ScreenContent
                 }
                 is Result.Failure -> {
@@ -67,6 +88,11 @@ class DetailViewModel(
                 }
             }
         }
+    }
+
+    fun dashboardPopStack(activity: Activity) = viewModelScope.launch {
+        exceptionToast(activity, R.string.error_code)
+        sendEvent(event = ScreenEvent.NavigateTo(Navigation.DashboardPopStack))
     }
 
     sealed class ScreenState {

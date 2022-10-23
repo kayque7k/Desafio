@@ -79,7 +79,9 @@ fun MenuPageScreen(
     val activity = LocalContext.current as MainActivity
 
     LaunchedEffect(viewModel) {
-        viewModel.getPerson()
+        viewModel.getPerson(
+            activity = activity
+        )
     }
 
     Screen(
@@ -88,7 +90,9 @@ fun MenuPageScreen(
             flowViewModel.setIdLover(it)
             viewModel.onClickItem()
         },
-        onEmpty = viewModel::onEmpty,
+        onEmpty = {
+            viewModel.onEmpty(activity = activity)
+        },
         onSwipeRightItem = viewModel::onSwipeRightItem,
         onSwipeLeftItem = viewModel::onSwipeLeftItem,
         onClickChat = { viewModel.onClickChat(activity = activity) },
@@ -96,7 +100,11 @@ fun MenuPageScreen(
         onClickSpotify = { viewModel.onClickSpotify(activity = activity) },
         onClickBlock = viewModel::onClickBlock,
         onClickinsert = viewModel::onClickinsert,
-        onRetry = { viewModel.getPerson() }
+        onRetry = {
+            viewModel.getPerson(
+                activity = activity
+            )
+        }
     )
 
     EventConsumer(
@@ -243,7 +251,7 @@ fun Header(
             modifier = Modifier
                 .padding(start = Size.Size32)
                 .weight(Weight.Weight_1),
-            text = uiState.item.collectAsState().value.loverName,
+            text = uiState.item.collectAsState().value.name,
             maxLines = MAX_LINE_DEFAULT,
             color = ColorPalette.Black,
             textAlign = TextAlign.Center,
@@ -262,7 +270,7 @@ fun Header(
                     contentDescription = stringResource(id = R.string.accessibily_menu_insert)
                 )
             }
-            if(uiState.item.collectAsState().value.number.isNotEmpty()) {
+            if (uiState.item.collectAsState().value.number.isNotEmpty()) {
                 IconButton(
                     onClick = onClickChat
                 ) {
@@ -272,7 +280,7 @@ fun Header(
                     )
                 }
             }
-            if(uiState.item.collectAsState().value.textPlus.isNotEmpty()) {
+            if (uiState.item.collectAsState().value.textPlus.isNotEmpty()) {
                 IconButton(
                     onClick = onClickBlock
                 ) {

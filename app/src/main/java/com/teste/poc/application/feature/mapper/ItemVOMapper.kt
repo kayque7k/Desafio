@@ -23,7 +23,7 @@ object ItemVOMapper {
         ItemCardVO(
             id = it.id,
             music = it.music,
-            name = myName,
+            name = nameLover,
             image = it.image,
             description = it.textLover
         )
@@ -48,7 +48,7 @@ object ItemVOMapper {
         ItemCardVO(
             id = it.id,
             music = it.music,
-            name = myName,
+            name = nameLover,
             image = it.image,
             description = it.textLover
         )

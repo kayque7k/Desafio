@@ -8,7 +8,7 @@ class UserUseCase(
     private val userRepository: UserRepository,
     private val output: ISessionOutput
 ) {
-    suspend fun execute() =  safeRunDispatcher {
-        userRepository.get(code = output.getCode())
+    suspend fun execute(load: () -> Unit) = safeRunDispatcher {
+        userRepository.get(code = output.getCode(), load = load)
     }
 }

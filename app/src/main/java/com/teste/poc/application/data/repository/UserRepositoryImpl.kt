@@ -11,6 +11,8 @@ import com.teste.poc.application.domain.model.User
 import com.teste.poc.application.domain.repository.UserRepository
 import com.teste.poc.commons.extensions.QUALITY_IMAGE
 import com.teste.poc.commons.extensions.isNull
+import com.teste.poc.commons.extensions.isZero
+import com.teste.poc.commons.extensions.orZero
 import com.teste.poc.coreapi.DOCUMENT
 import com.teste.poc.coreapi.FORM_DATA
 import com.teste.poc.coreapi.session.ISessioInput
@@ -29,13 +31,17 @@ class UserRepositoryImpl(
     private val context: Context
 ) : UserRepository {
 
-    override suspend fun get(code: String): User {
+    override suspend fun get(code: String, load: () -> Unit): User? {
         var user = output.getUser()
         if (user.isNull()) {
+            load.invoke()
             user = productApi.get(code).toUser()
+            if (user.id.isZero()) {
+                user = null
+            }
             input.setUser(user)
         }
-        return user!!
+        return user
     }
 
     override suspend fun insert(user: User): User =

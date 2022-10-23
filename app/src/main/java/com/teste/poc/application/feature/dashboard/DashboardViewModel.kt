@@ -43,7 +43,7 @@ class DashboardViewModel(
 
     fun setup() {
         output.getCode().let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 uiState.code.value = it
             }
         }
@@ -111,14 +111,16 @@ class DashboardViewModel(
                         )
                     }
 
-                    this@run.lovers.filter {
-                        it.Image.value.isNotNull()
-                    }.forEachIndexed { index, it ->
-                        it.Image.value?.let {
-                            dashboardImageLoverUseCase.execute(
-                                uri = it,
-                                id = result.data.lovers[index].id
-                            )
+                    if (result.data.lovers.isNotEmpty()) {
+                        this@run.lovers.filter {
+                            it.Image.value.isNotNull()
+                        }.forEachIndexed { index, it ->
+                            it.Image.value?.let {
+                                dashboardImageLoverUseCase.execute(
+                                    uri = it,
+                                    id = result.data.lovers[index].id
+                                )
+                            }
                         }
                     }
 
@@ -146,10 +148,10 @@ class DashboardViewModel(
 
     fun onClickAccess() = viewModelScope.launch {
         uiState.code.value.let {
-            if(it.isNotEmpty()) {
+            if (it.isNotEmpty()) {
                 input.setCode(it)
                 input.setUser(null)
-                sendEvent(ScreenEvent.NavigateTo(Navigation.Menu))
+                sendEvent(ScreenEvent.NavigateTo(Navigation.MenuPopStack))
             }
         }
     }

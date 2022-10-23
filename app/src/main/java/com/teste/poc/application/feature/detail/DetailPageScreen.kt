@@ -59,6 +59,7 @@ fun DetailPageScreen(
 
     LaunchedEffect(viewModel) {
         viewModel.getDetails(
+            activity = activity,
             id = flowViewModel.idLover
         )
     }
@@ -167,7 +168,7 @@ fun Header(
                 .fillMaxWidth()
                 .weight(Weight.Weight_1)
         )
-        if(uiState.item.value.cardsVO.firstOrNull()?.music.orEmpty().isNotEmpty()) {
+        if (uiState.item.value.cardsVO.firstOrNull()?.music.orEmpty().isNotEmpty()) {
             IconButton(
                 modifier = Modifier
                     .padding(

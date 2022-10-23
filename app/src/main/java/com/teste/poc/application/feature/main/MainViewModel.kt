@@ -33,5 +33,7 @@ class MainViewModel(
         object Dashboard : Navigation(route = "dashboard")
         object Menu : Navigation(route = "menu")
         object Detail : Navigation(route = "detail")
+        object MenuPopStack : Navigation(route = "menu", popStack = true)
+        object DashboardPopStack : Navigation(route = "dashboard", popStack = true)
     }
 }
