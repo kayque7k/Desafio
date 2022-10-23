@@ -170,7 +170,7 @@ class MenuViewModel(
 
     companion object {
         private const val TITLE_WHATS = "Adorei esse aplicativo S2"
-        private const val NUMBER_WHATS = "smsto:"
+        private const val NUMBER_WHATS = "smsto:55"
         private const val PACKAGE_WHATS = "com.whatsapp"
         private const val PACKAGE_INSTAGRAM = "com.instagram.android"
     }

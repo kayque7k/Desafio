@@ -18,10 +18,7 @@ import com.teste.poc.application.usecase.DashboardBackgroundUseCase
 import com.teste.poc.application.usecase.DashboardImageLoverUseCase
 import com.teste.poc.application.usecase.DashboardInsertUseCase
 import com.teste.poc.application.usecase.DashboardProfileUseCase
-import com.teste.poc.commons.extensions.EMPTY_STRING
-import com.teste.poc.commons.extensions.Result
-import com.teste.poc.commons.extensions.isNotNull
-import com.teste.poc.commons.extensions.isNull
+import com.teste.poc.commons.extensions.*
 import com.teste.poc.commons.viewModel.ChannelEventSenderImpl
 import com.teste.poc.commons.viewModel.EventSender
 import com.teste.poc.coreapi.session.ISessioInput
@@ -95,6 +92,11 @@ class DashboardViewModel(
                 }
             )) {
                 is Result.Success -> {
+                    if(result.data.id.isZero()){
+                        screenState.value = ScreenState.ScreenContent
+                        invalideToast(activity = activity, result.data.code)
+                    }
+
                     this@run.code.value = result.data.code
 
                     this@run.profileImage.value?.let {
