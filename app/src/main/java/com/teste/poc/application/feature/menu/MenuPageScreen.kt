@@ -1,7 +1,15 @@
 package com.teste.poc.application.feature.menu
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -14,6 +22,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.runtime.Composable
@@ -83,11 +92,11 @@ fun MenuPageScreen(
         onSwipeRightItem = viewModel::onSwipeRightItem,
         onSwipeLeftItem = viewModel::onSwipeLeftItem,
         onClickChat = { viewModel.onClickChat(activity = activity) },
+        onClickInstagram = { viewModel.onClickInstagram(activity = activity) },
         onClickSpotify = { viewModel.onClickSpotify(activity = activity) },
         onClickBlock = viewModel::onClickBlock,
-        onRetry = {
-            viewModel.getPerson()
-        }
+        onClickinsert = viewModel::onClickinsert,
+        onRetry = { viewModel.getPerson() }
     )
 
     EventConsumer(
@@ -105,8 +114,10 @@ private fun Screen(
     onSwipeRightItem: (ItemCardVO) -> Unit,
     onSwipeLeftItem: (ItemCardVO) -> Unit,
     onClickChat: () -> Unit,
+    onClickInstagram: () -> Unit,
     onClickSpotify: () -> Unit,
     onClickBlock: () -> Unit,
+    onClickinsert: () -> Unit,
     onRetry: () -> Unit,
 ) = MaterialTheme {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -134,7 +145,9 @@ private fun Screen(
                     onSwipeRightItem = onSwipeRightItem,
                     onSwipeLeftItem = onSwipeLeftItem,
                     onClickChat = onClickChat,
-                    onClickBlock = onClickBlock
+                    onClickInstagram = onClickInstagram,
+                    onClickBlock = onClickBlock,
+                    onClickinsert = onClickinsert
                 )
                 is MenuViewModel.ScreenState.ScreenError -> {
                     onRetry.invoke()
@@ -149,6 +162,7 @@ private fun Screen(
                 AlertDialog(
                     title = stringResource(id = R.string.menu_title_dialog),
                     text = uiState.item.collectAsState().value.textPlus,
+                    isSpotify = uiState.item.collectAsState().value.spotify.isNotEmpty(),
                     confirm = stringResource(id = R.string.menu_button_dialog),
                     spotify = stringResource(id = R.string.menu_button_dialog_spotify),
                     onClickSucess = {
@@ -167,8 +181,10 @@ fun ScreenContent(
     onEmpty: () -> Unit,
     onSwipeRightItem: (ItemCardVO) -> Unit,
     onSwipeLeftItem: (ItemCardVO) -> Unit,
+    onClickInstagram: () -> Unit,
     onClickChat: () -> Unit,
     onClickBlock: () -> Unit,
+    onClickinsert: () -> Unit
 ) = Column(
     modifier = Modifier
         .fillMaxSize()
@@ -177,8 +193,10 @@ fun ScreenContent(
     SpacerVertical(dp = Size.Size50)
     Header(
         uiState = uiState,
+        onClickInstagram = onClickInstagram,
         onClickChat = onClickChat,
-        onClickBlock = onClickBlock
+        onClickBlock = onClickBlock,
+        onClickinsert = onClickinsert
     )
     SpacerVertical(dp = Size.Size16)
     ScreenTwyper(
@@ -194,8 +212,10 @@ fun ScreenContent(
 @Composable
 fun Header(
     uiState: UiState,
+    onClickInstagram: () -> Unit,
     onClickChat: () -> Unit,
     onClickBlock: () -> Unit,
+    onClickinsert: () -> Unit,
 ) = Column(
     modifier = Modifier
         .padding(
@@ -211,7 +231,10 @@ fun Header(
     Row {
         if (uiState.item.collectAsState().value.imageProfile.isNotEmpty()) {
             ImageCircle(
-                uiState.item.collectAsState().value.imageProfile,
+                modifier = Modifier.rippleClickable {
+                    onClickInstagram.invoke()
+                },
+                url = uiState.item.collectAsState().value.imageProfile,
                 contentDescription = stringResource(id = R.string.accessibily_menu_profile)
             )
         }
@@ -221,29 +244,44 @@ fun Header(
                 .padding(start = Size.Size32)
                 .weight(Weight.Weight_1),
             text = uiState.item.collectAsState().value.loverName,
-            fontSize = Font.Font30,
+            maxLines = MAX_LINE_DEFAULT,
             color = ColorPalette.Black,
             textAlign = TextAlign.Center,
+            fontSize = Font.Font30,
             fontFamily = FontFamily.SansSerif,
+            overflow = TextOverflow.Ellipsis
         )
         SpacerHorizontal(dp = Size.Size8)
         Row {
             IconButton(
-                onClick = onClickChat
+                onClick = onClickinsert
             ) {
                 Icon(
-                    Icons.Rounded.Forum,
-                    contentDescription = stringResource(id = R.string.accessibily_menu_chat)
+                    Icons.Rounded.Add,
+                    tint = Color.Blue,
+                    contentDescription = stringResource(id = R.string.accessibily_menu_insert)
                 )
             }
-            IconButton(
-                onClick = onClickBlock
-            ) {
-                Icon(
-                    Icons.Rounded.Favorite,
-                    tint = Color.Red,
-                    contentDescription = stringResource(id = R.string.accessibily_menu_plus)
-                )
+            if(uiState.item.collectAsState().value.number.isNotEmpty()) {
+                IconButton(
+                    onClick = onClickChat
+                ) {
+                    Icon(
+                        Icons.Rounded.Forum,
+                        contentDescription = stringResource(id = R.string.accessibily_menu_chat)
+                    )
+                }
+            }
+            if(uiState.item.collectAsState().value.textPlus.isNotEmpty()) {
+                IconButton(
+                    onClick = onClickBlock
+                ) {
+                    Icon(
+                        Icons.Rounded.Favorite,
+                        tint = Color.Red,
+                        contentDescription = stringResource(id = R.string.accessibily_menu_plus)
+                    )
+                }
             }
         }
     }
@@ -355,6 +393,7 @@ fun AlertDialog(
     text: String,
     confirm: String,
     spotify: String,
+    isSpotify: Boolean,
     onClickSucess: () -> Unit,
     onClickSpotify: () -> Unit
 ) {
@@ -365,11 +404,19 @@ fun AlertDialog(
             { Text(text = confirm) }
         },
         dismissButton = {
-            TextButton(onClick = onClickSpotify)
-            { Text(text = spotify) }
+            if (isSpotify) {
+                TextButton(onClick = onClickSpotify)
+                { Text(text = spotify) }
+            }
         },
         title = { Text(text = title) },
-        text = { Text(text = text) }
+        text = {
+            Text(
+                text = text,
+                fontFamily = FontFamily.SansSerif,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     )
 }
 

@@ -7,11 +7,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.teste.poc.R
+import com.teste.poc.application.feature.dashboard.DashboardPageScreen
+import com.teste.poc.application.feature.dashboard.DashboardViewModel
 import com.teste.poc.application.feature.detail.DetailPageScreen
 import com.teste.poc.application.feature.detail.DetailViewModel
 import com.teste.poc.commons.navigartion.setNavigationContent
 import com.teste.poc.application.feature.main.MainViewModel.Navigation.Detail
 import com.teste.poc.application.feature.main.MainViewModel.Navigation.Menu
+import com.teste.poc.application.feature.main.MainViewModel.Navigation.Dashboard
 import com.teste.poc.application.feature.main.MainViewModel.Navigation
 import com.teste.poc.application.feature.menu.MenuPageScreen
 import com.teste.poc.application.feature.menu.MenuViewModel
@@ -23,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private val _flowViewModel: MainViewModel by inject()
 
     private val _menuViewModel: MenuViewModel by inject()
+
+    private val _dashboardViewModel: DashboardViewModel by inject()
 
     private val _detailViewModel: DetailViewModel by inject()
 
@@ -37,11 +42,15 @@ class MainActivity : AppCompatActivity() {
                 navEvent = ::navEvent
             )
         }
-
-        Toast.makeText(this, getString(R.string.menu_toast), Toast.LENGTH_SHORT).show()
     }
 
     private fun navGraphBuilder(builder: NavGraphBuilder) = builder.apply {
+        composable(Dashboard.route) {
+            DashboardPageScreen(
+                viewModel = _dashboardViewModel,
+                flowViewModel = _flowViewModel
+            )
+        }
         composable(Menu.route) {
             MenuPageScreen(
                 viewModel = _menuViewModel,

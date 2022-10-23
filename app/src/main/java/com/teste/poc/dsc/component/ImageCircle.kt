@@ -11,10 +11,11 @@ import com.teste.poc.dsc.dimen.Size
 
 @Composable
 fun ImageCircle(
+    modifier: Modifier = Modifier,
     url: String,
     contentDescription: String
 ) = Image(
-    modifier = Modifier
+    modifier = modifier
         .size(Size.SizeProfile)
         .clip(CircleShape),
     painter = rememberAsyncImagePainter(url),

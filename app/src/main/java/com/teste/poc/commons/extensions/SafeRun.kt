@@ -19,5 +19,5 @@ suspend fun <T> safeRunDispatcher(
 
 sealed class Result<out T> {
     class Success<T>(val data: T) : Result<T>()
-    class Failure(val error: Exception) : Result<Nothing>()
+    class Failure(val err: Exception) : Result<Nothing>()
 }

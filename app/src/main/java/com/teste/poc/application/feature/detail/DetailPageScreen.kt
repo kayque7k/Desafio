@@ -23,7 +23,6 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,16 +43,10 @@ import com.teste.poc.dsc.dimen.Radius
 import com.teste.poc.R
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import coil.compose.rememberAsyncImagePainter
 import com.teste.poc.dsc.dimen.Weight
 
@@ -66,7 +59,6 @@ fun DetailPageScreen(
 
     LaunchedEffect(viewModel) {
         viewModel.getDetails(
-            activity = activity,
             id = flowViewModel.idLover
         )
     }
@@ -175,26 +167,28 @@ fun Header(
                 .fillMaxWidth()
                 .weight(Weight.Weight_1)
         )
-        IconButton(
-            modifier = Modifier
-                .padding(
-                    top = Size.Size32,
-                    start = Size.Size4
-                ),
-            onClick = {
-                onClickMusic.invoke(
-                    uiState.item.value.cardsVO.firstOrNull()?.music.orEmpty()
+        if(uiState.item.value.cardsVO.firstOrNull()?.music.orEmpty().isNotEmpty()) {
+            IconButton(
+                modifier = Modifier
+                    .padding(
+                        top = Size.Size32,
+                        start = Size.Size4
+                    ),
+                onClick = {
+                    onClickMusic.invoke(
+                        uiState.item.value.cardsVO.firstOrNull()?.music.orEmpty()
+                    )
+                }
+            ) {
+                Icon(
+                    modifier = Modifier.size(size = Size.Size32),
+                    imageVector = Icons.Rounded.PlayArrow,
+                    tint = ColorPalette.PlayMusic,
+                    contentDescription = stringResource(
+                        id = R.string.accessibily_details_play
+                    )
                 )
             }
-        ) {
-            Icon(
-                modifier = Modifier.size(size = Size.Size32),
-                imageVector = Icons.Rounded.PlayArrow,
-                tint = ColorPalette.PlayMusic,
-                contentDescription = stringResource(
-                    id = R.string.accessibily_details_play
-                )
-            )
         }
     }
 }
@@ -275,24 +269,6 @@ private fun EventConsumer(
                 DetailViewModel.ScreenEvent.GoBack -> activity.onBackPressed()
                 is DetailViewModel.ScreenEvent.NavigateTo -> flowviewModel.navigate(event.navigation)
             }
-        }
-    }
-}
-
-@Composable
-fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) -> Unit) {
-    val eventHandler = rememberUpdatedState(onEvent)
-    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
-
-    DisposableEffect(lifecycleOwner.value) {
-        val lifecycle = lifecycleOwner.value.lifecycle
-        val observer = LifecycleEventObserver { owner, event ->
-            eventHandler.value(owner, event)
-        }
-
-        lifecycle.addObserver(observer)
-        onDispose {
-            lifecycle.removeObserver(observer)
         }
     }
 }

@@ -26,16 +26,22 @@ class Session(context: Context, val gson: Gson) : ISessionOutput, ISessioInput {
     }
 
     override fun getUser() =
-        gson.fromJson(sharedPreferences.getString(PERSON_ROUTER, EMPTY_STRING), User::class.java)
+        gson.fromJson(sharedPreferences.getString(USER_ROUTER, EMPTY_STRING), User::class.java)
 
-    override fun setUser(user: User) {
-        sharedPreferences.edit().putString(PERSON_ROUTER, gson.toJson(user)).apply()
+    override fun getCode() = sharedPreferences.getString(CODE_ROUTER, EMPTY_STRING).orEmpty()
+
+    override fun setUser(user: User?) {
+        sharedPreferences.edit().putString(USER_ROUTER, gson.toJson(user)).apply()
     }
 
+    override fun setCode(code: String) {
+        sharedPreferences.edit().putString(CODE_ROUTER, code).apply()
+    }
 
     companion object {
         private const val SECRET_FILE = "secret_shared_file_prefs"
 
-        private const val PERSON_ROUTER = "PERSON_ROUTER"
+        private const val USER_ROUTER = "USER_ROUTER"
+        private const val CODE_ROUTER = "CODE_ROUTER"
     }
 }
