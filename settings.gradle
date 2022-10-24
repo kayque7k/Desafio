@@ -15,5 +15,5 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "poc"
+rootProject.name = "wolfdevlovers"
 include ':app'

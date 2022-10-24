@@ -7,7 +7,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.teste.poc"
+        applicationId "com.teste.wolfdevlovers"
         minSdk 23
         targetSdk 31
         versionCode 1
@@ -39,17 +39,17 @@ android {
 }
 
 dependencies {
-    def nav_version = "2.5.0"
-    def compose = "1.1.1"
-    def lifecycle_version = "2.5.0"
+    def nav_version = "2.5.2"
+    def compose = "1.2.1"
+    def lifecycle_version = "2.5.1"
     def google_version = "2.9.0"
     def coil = "2.0.0-rc03"
     def koin_version = "3.2.0"
     def security_version = "1.0.0"
 
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.security:security-crypto:$security_version"
 
