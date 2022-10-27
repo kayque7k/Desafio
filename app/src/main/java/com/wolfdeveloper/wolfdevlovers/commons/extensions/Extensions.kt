@@ -13,6 +13,8 @@ fun Int?.orZero() = this ?: ZERO
 
 fun Int?.isZero() = this.orZero() == ZERO
 
+fun Int?.isPositive() = this.orZero() >= ZERO
+
 fun Any?.isNull(): Boolean = this == null
 
 fun Any?.isNotNull(): Boolean = this != null

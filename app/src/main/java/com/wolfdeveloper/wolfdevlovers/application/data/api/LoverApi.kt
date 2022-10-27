@@ -1,6 +1,6 @@
 package com.wolfdeveloper.wolfdevlovers.application.data.api
 
-import com.wolfdeveloper.wolfdevlovers.application.data.response.LoverResponse
+import com.wolfdeveloper.wolfdevlovers.application.data.response.PostResponse
 import okhttp3.MultipartBody
 import retrofit2.http.Multipart
 import retrofit2.http.PUT
@@ -14,5 +14,5 @@ interface LoverApi {
     suspend fun image(
         @Path("id") id: Int,
         @Part file: MultipartBody.Part
-    ): LoverResponse
+    ): PostResponse
 }

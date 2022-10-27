@@ -14,6 +14,7 @@ object Size {
     val Size4: Dp @Composable get() = dimensionResource(id = R.dimen.size_4)
     val Size8: Dp @Composable get() = dimensionResource(id = R.dimen.size_8)
     val Size16: Dp @Composable get() = dimensionResource(id = R.dimen.size_16)
+    val Size24: Dp @Composable get() = dimensionResource(id = R.dimen.size_24)
     val Size32: Dp @Composable get() = dimensionResource(id = R.dimen.size_32)
     val Size40: Dp @Composable get() = dimensionResource(id = R.dimen.size_40)
     val Size50: Dp @Composable get() = dimensionResource(id = R.dimen.size_50)

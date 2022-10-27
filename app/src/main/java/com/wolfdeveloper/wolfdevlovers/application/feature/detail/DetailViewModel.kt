@@ -27,7 +27,6 @@ class DetailViewModel(
 ) : ViewModel(), EventSender<ScreenEvent> by ChannelEventSenderImpl() {
 
     companion object {
-        private const val EMOJI = "\uD83E\uDD70"
         private const val APP_YOUTUBE = "vnd.youtube:"
         private const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
     }
@@ -50,11 +49,6 @@ class DetailViewModel(
         )
         val intentBrowser = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         try {
-            Toast.makeText(
-                activity,
-                activity.getString(R.string.notify_text, EMOJI),
-                Toast.LENGTH_LONG
-            ).show();
             activity.startActivity(intentApp)
         } catch (ex: ActivityNotFoundException) {
             try {

@@ -47,6 +47,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import coil.compose.rememberAsyncImagePainter
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Weight
 
@@ -168,7 +169,7 @@ fun Header(
                 .fillMaxWidth()
                 .weight(Weight.Weight_1)
         )
-        if (uiState.item.value.cardsVO.firstOrNull()?.music.orEmpty().isNotEmpty()) {
+        if (uiState.item.value.cardsVO.firstOrNull()?.link.orEmpty().isNotEmpty()) {
             IconButton(
                 modifier = Modifier
                     .padding(
@@ -177,17 +178,15 @@ fun Header(
                     ),
                 onClick = {
                     onClickMusic.invoke(
-                        uiState.item.value.cardsVO.firstOrNull()?.music.orEmpty()
+                        uiState.item.value.cardsVO.firstOrNull()?.link.orEmpty()
                     )
                 }
             ) {
                 Icon(
-                    modifier = Modifier.size(size = Size.Size32),
-                    imageVector = Icons.Rounded.PlayArrow,
-                    tint = ColorPalette.PlayMusic,
-                    contentDescription = stringResource(
-                        id = R.string.accessibily_details_play
-                    )
+                    modifier = Modifier.size(Size.Size24),
+                    painter = painterResource(id = R.drawable.ic_link),
+                    contentDescription = stringResource(id = R.string.accessibily_details_play),
+                    tint = Color.Unspecified
                 )
             }
         }

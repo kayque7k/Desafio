@@ -5,7 +5,7 @@
     <string name="menu_title_dialog">Area Plus</string>
 
     <string name="menu_button_dialog">OK</string>
-    <string name="menu_button_dialog_spotify">Spotify</string>
+    <string name="menu_button_dialog_access">Acessar</string>
 
     <string name="accessibily_menu_profile">Perfil</string>
     <string name="accessibily_menu_liked">Curtir</string>
@@ -13,6 +13,8 @@
     <string name="accessibily_menu_chat">Chat</string>
     <string name="accessibily_menu_instagram">Instagram</string>
     <string name="accessibily_menu_insert">Criar</string>
+    <string name="accessibily_menu_next">Proximo postagem</string>
+    <string name="accessibily_dash_add_image">Adicionar imagem</string>
 
     <string name="accessibily_details_back">Voltar</string>
     <string name="accessibily_details_play">Play</string>

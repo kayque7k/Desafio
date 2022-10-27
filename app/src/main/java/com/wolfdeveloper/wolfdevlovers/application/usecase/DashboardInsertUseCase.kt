@@ -10,7 +10,7 @@ class DashboardInsertUseCase(
 ) {
     suspend fun execute(user: User) = safeRunDispatcher {
         user.run {
-            instagram = "$LINK_INSTAGRAM${instagram.replace("@", EMPTY_STRING).trim()}"
+            socialMediaLink = "$LINK_INSTAGRAM${socialMediaLink.replace("@", EMPTY_STRING).trim()}"
             userRepository.insert(this)
         }
     }

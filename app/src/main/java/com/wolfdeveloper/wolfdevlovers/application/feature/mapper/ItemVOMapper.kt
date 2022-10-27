@@ -9,48 +9,48 @@ object ItemVOMapper {
     fun User.toItemVO() = ItemVO(
         name = myName,
         loverName = nameLover,
-        instagram = instagram,
+        socialMediaLink = socialMediaLink,
         number = whatssap,
         imageProfile = myImage,
-        spotify = spotify,
-        imageBackground = backgoundImage,
+        linkPlus = linkPlus,
+        imageBackground = backgroundImage,
         textPlus = plus,
         code = code,
         cardsVO = toItemCardVO()
     )
 
-    fun User.toItemCardVO() = lovers.map {
+    fun User.toItemCardVO() = posts.map {
         ItemCardVO(
             id = it.id,
-            music = it.music,
+            link = it.link,
             name = nameLover,
             image = it.image,
-            description = it.textLover
+            description = it.textPublication
         )
     }.toMutableList()
 
     fun User.toItemVOFilter(id: Int) = ItemVO(
         name = myName,
         loverName = nameLover,
-        instagram = instagram,
+        socialMediaLink = socialMediaLink,
         number = whatssap,
         imageProfile = myImage,
-        spotify = spotify,
-        imageBackground = backgoundImage,
+        linkPlus = linkPlus,
+        imageBackground = backgroundImage,
         textPlus = plus,
         code = code,
         cardsVO = toItemCardVOFilter(id)
     )
 
-    fun User.toItemCardVOFilter(id: Int) = lovers.filterIndexed { _, pair ->
+    fun User.toItemCardVOFilter(id: Int) = posts.filterIndexed { _, pair ->
         pair.id == id
     }.map {
         ItemCardVO(
             id = it.id,
-            music = it.music,
+            link = it.link,
             name = nameLover,
             image = it.image,
-            description = it.textLover
+            description = it.textPublication
         )
     }.toMutableList()
 

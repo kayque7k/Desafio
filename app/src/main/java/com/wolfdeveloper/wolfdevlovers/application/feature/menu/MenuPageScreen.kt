@@ -1,27 +1,15 @@
 package com.wolfdeveloper.wolfdevlovers.application.feature.menu
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Card
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.NextPlan
+import androidx.compose.material.icons.filled.Redo
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Forum
@@ -35,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -65,7 +54,7 @@ import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Size
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Weight
 
 private const val STACKCOUNT = 10
-private const val PADDING = 5f
+private const val PADDING = 7f
 private const val HEIGHT_BASE = 600
 private const val HEIGHT_MIN = 1.8
 private const val HEIGHT_MAX = 1.5
@@ -78,7 +67,7 @@ fun MenuPageScreen(
     val activity = LocalContext.current as MainActivity
 
     LaunchedEffect(viewModel) {
-        viewModel.getPerson(
+        viewModel.getUser(
             activity = activity
         )
     }
@@ -94,15 +83,14 @@ fun MenuPageScreen(
         },
         onSwipeRightItem = viewModel::onSwipeRightItem,
         onSwipeLeftItem = viewModel::onSwipeLeftItem,
+        onSwipeNextItem = viewModel::onSwipeNextItem,
         onClickChat = { viewModel.onClickChat(activity = activity) },
         onClickInstagram = { viewModel.onClickInstagram(activity = activity) },
         onClickSpotify = { viewModel.onClickSpotify(activity = activity) },
         onClickBlock = viewModel::onClickBlock,
         onClickinsert = viewModel::onClickinsert,
         onRetry = {
-            viewModel.getPerson(
-                activity = activity
-            )
+            viewModel.onRetry(activity)
         }
     )
 
@@ -111,6 +99,7 @@ fun MenuPageScreen(
         viewModel = viewModel,
         flowviewModel = flowViewModel
     )
+
 }
 
 @Composable
@@ -119,13 +108,14 @@ private fun Screen(
     onClickItem: (Int) -> Unit,
     onEmpty: () -> Unit,
     onSwipeRightItem: (ItemCardVO) -> Unit,
-    onSwipeLeftItem: (ItemCardVO) -> Unit,
+    onSwipeLeftItem: () -> Unit,
+    onSwipeNextItem: () -> Unit,
     onClickChat: () -> Unit,
     onClickInstagram: () -> Unit,
     onClickSpotify: () -> Unit,
     onClickBlock: () -> Unit,
     onClickinsert: () -> Unit,
-    onRetry: () -> Unit,
+    onRetry: () -> Unit
 ) = MaterialTheme {
     Box(modifier = Modifier.fillMaxSize()) {
         if (uiState.item.collectAsState().value.imageBackground.isNotEmpty()) {
@@ -151,6 +141,7 @@ private fun Screen(
                     onEmpty = onEmpty,
                     onSwipeRightItem = onSwipeRightItem,
                     onSwipeLeftItem = onSwipeLeftItem,
+                    onSwipeNextItem = onSwipeNextItem,
                     onClickChat = onClickChat,
                     onClickInstagram = onClickInstagram,
                     onClickBlock = onClickBlock,
@@ -169,9 +160,9 @@ private fun Screen(
                 AlertDialog(
                     title = stringResource(id = R.string.menu_title_dialog),
                     text = uiState.item.collectAsState().value.textPlus,
-                    isSpotify = uiState.item.collectAsState().value.spotify.isNotEmpty(),
+                    isSpotify = uiState.item.collectAsState().value.linkPlus.isNotEmpty(),
                     confirm = stringResource(id = R.string.menu_button_dialog),
-                    spotify = stringResource(id = R.string.menu_button_dialog_spotify),
+                    access = stringResource(id = R.string.menu_button_dialog_access),
                     onClickSucess = {
                         uiState.openDialogFavorite.value = false
                     },
@@ -187,33 +178,50 @@ fun ScreenContent(
     onClickItem: (Int) -> Unit,
     onEmpty: () -> Unit,
     onSwipeRightItem: (ItemCardVO) -> Unit,
-    onSwipeLeftItem: (ItemCardVO) -> Unit,
+    onSwipeLeftItem: () -> Unit,
+    onSwipeNextItem: () -> Unit,
     onClickInstagram: () -> Unit,
     onClickChat: () -> Unit,
     onClickBlock: () -> Unit,
     onClickinsert: () -> Unit
-) = Column(
+) = Scaffold(
     modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState())
+        .fillMaxSize(),
+    floatingActionButton = {
+        FloatingActionButton(
+            onClick = { onSwipeNextItem.invoke() },
+            backgroundColor = MaterialTheme.colors.primary,
+            contentColor = MaterialTheme.colors.onPrimary
+        ) {
+            Icon(Icons.Filled.Redo, stringResource(id = R.string.accessibily_menu_next))
+        }
+    },
+    floatingActionButtonPosition = FabPosition.End,
+    isFloatingActionButtonDocked = false
 ) {
-    SpacerVertical(dp = Size.Size50)
-    Header(
-        uiState = uiState,
-        onClickInstagram = onClickInstagram,
-        onClickChat = onClickChat,
-        onClickBlock = onClickBlock,
-        onClickinsert = onClickinsert
-    )
-    SpacerVertical(dp = Size.Size16)
-    ScreenTwyper(
-        uiState = uiState,
-        onClickItem = onClickItem,
-        onSwipeRightItem = onSwipeRightItem,
-        onSwipeLeftItem = onSwipeLeftItem,
-        onEmpty = onEmpty
-    )
-    SpacerVertical(dp = Size.Size16)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        SpacerVertical(dp = Size.Size50)
+        Header(
+            uiState = uiState,
+            onClickInstagram = onClickInstagram,
+            onClickChat = onClickChat,
+            onClickBlock = onClickBlock,
+            onClickinsert = onClickinsert
+        )
+        SpacerVertical(dp = Size.Size16)
+        ScreenTwyper(
+            uiState = uiState,
+            onClickItem = onClickItem,
+            onSwipeRightItem = onSwipeRightItem,
+            onSwipeLeftItem = onSwipeLeftItem,
+            onEmpty = onEmpty
+        )
+        SpacerVertical(dp = Size.Size16)
+    }
 }
 
 @Composable
@@ -264,9 +272,10 @@ fun Header(
                 onClick = onClickinsert
             ) {
                 Icon(
-                    Icons.Rounded.Add,
-                    tint = Color.Blue,
-                    contentDescription = stringResource(id = R.string.accessibily_menu_insert)
+                    modifier = Modifier.size(Size.Size24),
+                    painter = painterResource(id = R.drawable.ic_padlock_open),
+                    contentDescription = stringResource(id = R.string.accessibily_menu_insert),
+                    tint = Color.Unspecified
                 )
             }
             if (uiState.item.collectAsState().value.number.isNotEmpty()) {
@@ -274,8 +283,10 @@ fun Header(
                     onClick = onClickChat
                 ) {
                     Icon(
-                        Icons.Rounded.Forum,
-                        contentDescription = stringResource(id = R.string.accessibily_menu_chat)
+                        modifier = Modifier.size(Size.Size32),
+                        painter = painterResource(id = R.drawable.ic_whatsapp),
+                        contentDescription = stringResource(id = R.string.accessibily_menu_chat),
+                        tint = Color.Unspecified
                     )
                 }
             }
@@ -284,9 +295,10 @@ fun Header(
                     onClick = onClickBlock
                 ) {
                     Icon(
-                        Icons.Rounded.Favorite,
-                        tint = Color.Red,
-                        contentDescription = stringResource(id = R.string.accessibily_menu_plus)
+                        modifier = Modifier.size(Size.Size24),
+                        painter = painterResource(id = R.drawable.ic_star),
+                        contentDescription = stringResource(id = R.string.accessibily_menu_plus),
+                        tint = Color.Unspecified
                     )
                 }
             }
@@ -299,7 +311,7 @@ private fun ScreenTwyper(
     uiState: UiState,
     onClickItem: (Int) -> Unit,
     onSwipeRightItem: (ItemCardVO) -> Unit,
-    onSwipeLeftItem: (ItemCardVO) -> Unit,
+    onSwipeLeftItem: () -> Unit,
     onEmpty: () -> Unit,
 ) = Column(
     modifier = Modifier
@@ -312,15 +324,16 @@ private fun ScreenTwyper(
         items = uiState.item.collectAsState().value.cardsVO,
         stackCount = STACKCOUNT,
         paddingBetweenCards = PADDING,
-        twyperController = uiState.twyperController.collectAsState().value, // optional
+        twyperController = uiState.twyperController.collectAsState().value,
         onItemRemoved = { item, direction ->
             when (direction) {
-                SwipedOutDirection.LEFT -> onSwipeLeftItem.invoke(item)
+                SwipedOutDirection.LEFT -> onSwipeLeftItem.invoke()
                 SwipedOutDirection.RIGHT -> onSwipeRightItem.invoke(item)
             }
         },
-        onEmpty = onEmpty
-    ) { item ->
+        onEmpty = onEmpty,
+
+        ) { item ->
         Item(
             it = item,
             onClickItem = onClickItem
@@ -389,7 +402,7 @@ private fun ScreenProgress() = Column(
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(Size.SizeProgress),
-            color = ColorPalette.White
+            color = ColorPalette.Black
         )
     }
 }
@@ -399,7 +412,7 @@ fun AlertDialog(
     title: String,
     text: String,
     confirm: String,
-    spotify: String,
+    access: String,
     isSpotify: Boolean,
     onClickSucess: () -> Unit,
     onClickSpotify: () -> Unit
@@ -413,10 +426,28 @@ fun AlertDialog(
         dismissButton = {
             if (isSpotify) {
                 TextButton(onClick = onClickSpotify)
-                { Text(text = spotify) }
+                { Text(text = access) }
             }
         },
-        title = { Text(text = title) },
+        title = {
+            Row {
+                Icon(
+                    modifier = Modifier.size(Size.Size16),
+                    painter = painterResource(id = R.drawable.ic_star),
+                    contentDescription = stringResource(id = R.string.accessibily_menu_plus),
+                    tint = Color.Unspecified
+                )
+                SpacerHorizontal(dp = Size.Size8)
+                Text(text = title)
+                SpacerHorizontal(dp = Size.Size8)
+                Icon(
+                    modifier = Modifier.size(Size.Size16),
+                    painter = painterResource(id = R.drawable.ic_star),
+                    contentDescription = stringResource(id = R.string.accessibily_menu_plus),
+                    tint = Color.Unspecified
+                )
+            }
+        },
         text = {
             Text(
                 text = text,

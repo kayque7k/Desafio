@@ -11,28 +11,28 @@ object UserMapper {
         id = id,
         myName = myName,
         myImage = myImage,
-        backgoundImage = backgoundImage,
+        backgroundImage = backgroundImage,
         nameLover = nameLover,
         plus = plus,
-        spotify = spotify,
+        linkPlus = linkPlus,
         whatssap = whatssap,
-        instagram = instagram,
+        socialMediaLink = socialMediaLink,
         code = code,
-        lovers = lovers.toLoverList()
+        posts = lovers.toLoverList()
     )
 
     fun User.toUserInput() = UserInput(
         id = id,
         myName = myName,
         myImage = myImage,
-        backgoundImage = backgoundImage,
+        backgroundImage = backgroundImage,
         nameLover = nameLover,
         plus = plus,
-        spotify = spotify,
+        linkPlus = linkPlus,
         whatssap = whatssap,
-        instagram = instagram,
+        socialMediaLink = socialMediaLink,
         code = code,
-        lovers = lovers.toLoverInputList()
+        lovers = posts.toLoverInputList()
     )
 
 }

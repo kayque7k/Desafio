@@ -3,9 +3,9 @@ package com.wolfdeveloper.wolfdevlovers.application.injector
 import com.google.gson.Gson
 import com.wolfdeveloper.wolfdevlovers.application.data.api.LoverApi
 import com.wolfdeveloper.wolfdevlovers.application.data.api.UserApi
-import com.wolfdeveloper.wolfdevlovers.application.data.repository.LoverRepositoryImpl
+import com.wolfdeveloper.wolfdevlovers.application.data.repository.PostRepositoryImpl
 import com.wolfdeveloper.wolfdevlovers.application.data.repository.UserRepositoryImpl
-import com.wolfdeveloper.wolfdevlovers.application.domain.repository.LoverRepository
+import com.wolfdeveloper.wolfdevlovers.application.domain.repository.PostRepository
 import com.wolfdeveloper.wolfdevlovers.application.domain.repository.UserRepository
 import com.wolfdeveloper.wolfdevlovers.application.feature.dashboard.DashboardViewModel
 import com.wolfdeveloper.wolfdevlovers.application.feature.detail.DetailViewModel
@@ -64,7 +64,7 @@ val useCaseModule = module {
     factory { DashboardInsertUseCase(userRepository = get()) }
     factory { DashboardBackgroundUseCase(userRepository = get()) }
     factory { DashboardProfileUseCase(userRepository = get()) }
-    factory { DashboardImageLoverUseCase(loverRepository = get()) }
+    factory { DashboardImageLoverUseCase(postRepository = get()) }
 }
 
 val repositoryModule = module {
@@ -76,8 +76,8 @@ val repositoryModule = module {
             context = androidContext()
         )
     }
-    factory<LoverRepository> {
-        LoverRepositoryImpl(
+    factory<PostRepository> {
+        PostRepositoryImpl(
             loverApi = get(),
             context = androidContext()
         )

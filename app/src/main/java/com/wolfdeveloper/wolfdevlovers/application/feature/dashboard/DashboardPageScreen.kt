@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -194,9 +195,10 @@ private fun ScreenDashBoard(
             )
         ) {
             Icon(
-                Icons.Filled.Code,
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                painter = painterResource(id = R.drawable.ic_padlock_open),
                 contentDescription = stringResource(id = R.string.dash_button_access),
-                modifier = Modifier.size(ButtonDefaults.IconSize)
+                tint = Color.Unspecified
             )
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(stringResource(id = R.string.dash_button_access))
@@ -212,9 +214,10 @@ private fun ScreenDashBoard(
             )
         ) {
             Icon(
-                Icons.Filled.Create,
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                painter = painterResource(id = R.drawable.ic_add),
                 contentDescription = stringResource(id = R.string.dash_button_create),
-                modifier = Modifier.size(ButtonDefaults.IconSize)
+                tint = Color.Unspecified
             )
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(stringResource(id = R.string.dash_button_create))
@@ -338,10 +341,10 @@ private fun formData(uiState: UiState) = Column(
     //Textfield Spotify
     TextField(
         modifier = Modifier.fillMaxWidth(),
-        value = uiState.spotify.value,
+        value = uiState.linkPlus.value,
         onValueChange = {
             if (it.length <= MAX_CARACHTER_PLUS) {
-                uiState.spotify.value = it
+                uiState.linkPlus.value = it
             }
         },
         label = { Text(stringResource(id = R.string.dash_spotify)) },
@@ -355,10 +358,10 @@ private fun formData(uiState: UiState) = Column(
     //Textfield Instagram
     TextField(
         modifier = Modifier.fillMaxWidth(),
-        value = uiState.instagram.value,
+        value = uiState.socialMediaLink.value,
         onValueChange = {
             if (it.length <= MAX_CARACHTER) {
-                uiState.instagram.value = it
+                uiState.socialMediaLink.value = it
             }
         },
         label = { Text(stringResource(id = R.string.dash_instagram)) },
@@ -431,9 +434,10 @@ fun ImageProfile(uiState: UiState) {
         SpacerVertical(Size.Size8)
         if (uiState.profileImage.collectAsState().value.isNull()) {
             Icon(
-                Icons.Filled.Add, contentDescription = null,
-                modifier = Modifier
-                    .size(Size.Size100)
+                modifier = Modifier.size(Size.Size100),
+                painter = painterResource(id = R.drawable.ic_add_image),
+                contentDescription = stringResource(id = R.string.accessibily_dash_add_image),
+                tint = Color.Unspecified
             )
         } else {
             Image(
@@ -473,8 +477,10 @@ fun ImageBackground(uiState: UiState) {
         SpacerVertical(Size.Size8)
         if (uiState.backgroundImage.collectAsState().value.isNull()) {
             Icon(
-                Icons.Filled.Add, contentDescription = null,
-                modifier = Modifier.size(Size.Size100)
+                modifier = Modifier.size(Size.Size100),
+                painter = painterResource(id = R.drawable.ic_add_image),
+                contentDescription = stringResource(id = R.string.accessibily_dash_add_image),
+                tint = Color.Unspecified
             )
         } else {
             Image(
@@ -561,10 +567,10 @@ private fun formDataLovers(lover: UiState.LoverState, index: Int) = Column(
             .width(
                 Size.Size350
             ),
-        value = lover.music.value,
+        value = lover.link.value,
         onValueChange = {
             if (it.length <= MAX_CARACHTER) {
-                lover.music.value = it
+                lover.link.value = it
             }
         },
         label = { Text(stringResource(id = R.string.dash_his_music)) },
@@ -583,7 +589,7 @@ fun ImageLover(lover: UiState.LoverState) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        lover.Image.value = uri
+        lover.image.value = uri
     }
     return Column(
         modifier = Modifier
@@ -603,20 +609,21 @@ fun ImageLover(lover: UiState.LoverState) {
             fontWeight = FontWeight.Normal
         )
         SpacerVertical(Size.Size8)
-        if (lover.Image.collectAsState().value.isNull()) {
+        if (lover.image.collectAsState().value.isNull()) {
             Icon(
-                Icons.Filled.Add, contentDescription = null,
-                modifier = Modifier
-                    .size(Size.Size350)
+                modifier = Modifier.size(Size.Size256),
+                painter = painterResource(id = R.drawable.ic_add_image),
+                contentDescription = stringResource(id = R.string.accessibily_dash_add_image),
+                tint = Color.Unspecified
             )
         } else {
             Image(
                 painter = rememberImagePainter(
-                    lover.Image.value
+                    lover.image.value
                 ),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(Size.Size350)
+                    .size(Size.Size256)
             )
         }
     }
@@ -637,13 +644,14 @@ private fun Button(onClick: () -> Unit) = Column(
             bottom = Size.Size16
         )
     ) {
-        Icon(
-            Icons.Filled.Favorite,
-            contentDescription = stringResource(id = R.string.dash_button),
-            modifier = Modifier.size(ButtonDefaults.IconSize)
-        )
-        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
         Text(stringResource(id = R.string.dash_button))
+        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+        Icon(
+            modifier = Modifier.size(ButtonDefaults.IconSize),
+            painter = painterResource(id = R.drawable.ic_next),
+            contentDescription = stringResource(id = R.string.dash_button_next),
+            tint = Color.Unspecified
+        )
     }
 }
 
@@ -702,9 +710,10 @@ private fun ScreenSuccess(
             )
         ) {
             Icon(
-                Icons.Filled.CopyAll,
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                painter = painterResource(id = R.drawable.ic_copy),
                 contentDescription = stringResource(id = R.string.dash_button_copy),
-                modifier = Modifier.size(ButtonDefaults.IconSize)
+                tint = Color.Unspecified
             )
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(stringResource(id = R.string.dash_button_copy))
@@ -719,13 +728,14 @@ private fun ScreenSuccess(
                 bottom = Size.Size16
             )
         ) {
-            Icon(
-                Icons.Filled.SkipNext,
-                contentDescription = stringResource(id = R.string.dash_button_next),
-                modifier = Modifier.size(ButtonDefaults.IconSize)
-            )
-            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(stringResource(id = R.string.dash_button_next))
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            Icon(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                painter = painterResource(id = R.drawable.ic_next),
+                contentDescription = stringResource(id = R.string.dash_button_next),
+                tint = Color.Unspecified
+            )
         }
     }
 }

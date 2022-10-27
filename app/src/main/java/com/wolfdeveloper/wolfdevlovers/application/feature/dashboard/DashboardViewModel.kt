@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wolfdeveloper.wolfdevlovers.application.domain.model.Lover
+import com.wolfdeveloper.wolfdevlovers.application.domain.model.Post
 import com.wolfdeveloper.wolfdevlovers.application.domain.model.User
 import com.wolfdeveloper.wolfdevlovers.application.feature.main.MainViewModel.Navigation
 import com.wolfdeveloper.wolfdevlovers.application.feature.dashboard.DashboardViewModel.ScreenEvent
@@ -66,7 +66,7 @@ class DashboardViewModel(
             return@run
         }
         if (this@run.lovers.filter {
-                it.Image.value.isNotNull() && it.text.value.isNotEmpty()
+                it.image.value.isNotNull() && it.text.value.isNotEmpty()
             }.isEmpty()) {
             invalideToast(activity = activity, id = R.string.invalide_lovers)
             return@run
@@ -79,15 +79,15 @@ class DashboardViewModel(
                     myName = this@run.name.value
                     nameLover = this@run.nameLover.value
                     plus = this@run.plus.value
-                    spotify = this@run.spotify.value
+                    linkPlus = this@run.linkPlus.value
                     whatssap = this@run.whatssap.value
-                    instagram = this@run.instagram.value
-                    lovers = this@run.lovers.filter {
-                        !it.text.value.isBlank() && it.Image.value.isNotNull()
+                    socialMediaLink = this@run.socialMediaLink.value
+                    posts = this@run.lovers.filter {
+                        !it.text.value.isBlank() && it.image.value.isNotNull()
                     }.map {
-                        Lover().apply {
-                            textLover = it.text.value
-                            music = it.music.value
+                        Post().apply {
+                            textPublication = it.text.value
+                            link = it.link.value
                         }
                     }
                 }
@@ -114,14 +114,14 @@ class DashboardViewModel(
                         )
                     }
 
-                    if (result.data.lovers.isNotEmpty()) {
+                    if (result.data.posts.isNotEmpty()) {
                         this@run.lovers.filter {
-                            it.Image.value.isNotNull()
+                            it.image.value.isNotNull()
                         }.forEachIndexed { index, it ->
-                            it.Image.value?.let {
+                            it.image.value?.let {
                                 dashboardImageLoverUseCase.execute(
                                     uri = it,
-                                    id = result.data.lovers[index].id
+                                    id = result.data.posts[index].id
                                 )
                             }
                         }
@@ -194,8 +194,8 @@ class DashboardViewModel(
         val name = mutableStateOf(EMPTY_STRING)
         val nameLover = mutableStateOf(EMPTY_STRING)
         val plus = mutableStateOf(EMPTY_STRING)
-        val spotify = mutableStateOf(EMPTY_STRING)
-        val instagram = mutableStateOf(EMPTY_STRING)
+        val linkPlus = mutableStateOf(EMPTY_STRING)
+        val socialMediaLink = mutableStateOf(EMPTY_STRING)
         val whatssap = mutableStateOf(EMPTY_STRING)
 
         val profileImage = MutableStateFlow<Uri?>(null)
@@ -209,8 +209,8 @@ class DashboardViewModel(
 
         class LoverState {
             val text = mutableStateOf(EMPTY_STRING)
-            val music = mutableStateOf(EMPTY_STRING)
-            val Image = MutableStateFlow<Uri?>(null)
+            val link = mutableStateOf(EMPTY_STRING)
+            val image = MutableStateFlow<Uri?>(null)
         }
     }
 }

@@ -1,29 +1,29 @@
 package com.wolfdeveloper.wolfdevlovers.application.data.mapper
 
 import com.wolfdeveloper.wolfdevlovers.application.data.input.LoverInput
-import com.wolfdeveloper.wolfdevlovers.application.data.response.LoverResponse
-import com.wolfdeveloper.wolfdevlovers.application.domain.model.Lover
+import com.wolfdeveloper.wolfdevlovers.application.data.response.PostResponse
+import com.wolfdeveloper.wolfdevlovers.application.domain.model.Post
 
 object LoverMapper {
-    fun List<LoverResponse>.toLoverList() = map {
+    fun List<PostResponse>.toLoverList() = map {
         it.toLover()
     }
 
-    fun LoverResponse.toLover() = Lover(
+    fun PostResponse.toLover() = Post(
         id = id,
         image = image,
-        textLover = textLover,
-        music = music
+        textPublication = textPublication,
+        link = link
     )
 
-    fun List<Lover>.toLoverInputList() = map {
+    fun List<Post>.toLoverInputList() = map {
         it.toLoverInput()
     }
 
-    fun Lover.toLoverInput() = LoverInput(
+    fun Post.toLoverInput() = LoverInput(
         id = id,
         image = image,
-        textLover = textLover,
-        music = music
+        textPublication = textPublication,
+        link = textPublication
     )
 }

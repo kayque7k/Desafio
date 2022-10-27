@@ -10,6 +10,7 @@
     <dimen name="size_4">4dp</dimen>
     <dimen name="size_8">8dp</dimen>
     <dimen name="size_16">16dp</dimen>
+    <dimen name="size_24">24dp</dimen>
     <dimen name="size_32">32dp</dimen>
     <dimen name="size_40">40dp</dimen>
     <dimen name="size_50">50dp</dimen>

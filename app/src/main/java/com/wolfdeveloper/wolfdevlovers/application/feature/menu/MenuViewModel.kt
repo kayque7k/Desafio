@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.theapache64.twyper.TwyperController
@@ -15,9 +16,7 @@ import com.wolfdeveloper.wolfdevlovers.application.feature.menu.MenuViewModel.Sc
 import com.wolfdeveloper.wolfdevlovers.application.feature.viewobject.ItemCardVO
 import com.wolfdeveloper.wolfdevlovers.application.feature.viewobject.ItemVO
 import com.wolfdeveloper.wolfdevlovers.application.usecase.UserUseCase
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.Result
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.exceptionToast
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.isNull
+import com.wolfdeveloper.wolfdevlovers.commons.extensions.*
 import com.wolfdeveloper.wolfdevlovers.commons.viewModel.ChannelEventSenderImpl
 import com.wolfdeveloper.wolfdevlovers.commons.viewModel.EventSender
 import com.wolfdeveloper.wolfdevlovers.coreapi.session.ISessionOutput
@@ -30,9 +29,10 @@ class MenuViewModel(
     private val output: ISessionOutput
 ) : ViewModel(), EventSender<ScreenEvent> by ChannelEventSenderImpl() {
 
+    private var attemptsGetCode: Int = ATTEMPTS_GET_CODE
     val uiState = UiState()
 
-    fun getPerson(activity: Activity) = uiState.run {
+    fun getUser(activity: Activity) = uiState.run {
         if (item.value.cardsVO.isNotEmpty() &&
             output.getCode() == item.value.code
         ) {
@@ -49,7 +49,7 @@ class MenuViewModel(
                 }
             )) {
                 is Result.Success -> {
-                    if(result.data.isNull()){
+                    if (result.data.isNull()) {
                         dashboardPopStack(activity = activity)
                     } else {
                         result.data?.let {
@@ -66,23 +66,37 @@ class MenuViewModel(
         }
     }
 
+    fun onRetry(activity: Activity) = attemptsGetCode.run {
+        if (attemptsGetCode.isPositive()) {
+            attemptsGetCode--
+            getUser(activity = activity)
+        } else {
+            dashboardPopStack(activity)
+        }
+    }
+
     fun onClickItem() = viewModelScope.launch {
         sendEvent(ScreenEvent.NavigateTo(Navigation.Detail))
     }
 
     fun onSwipeRightItem(itemVO: ItemCardVO) = uiState.apply {
         item.value.cardsVO.remove(itemVO)
+        twyperController.value.currentCardController?.onDragEnd()
     }
 
-    fun onSwipeLeftItem(itemVO: ItemCardVO) = uiState.apply {
+    fun onSwipeLeftItem() = uiState.apply {
         twyperController.value.currentCardController?.onDragCancel()
         twyperController.value.currentCardController?.swipeRight()
     }
 
-    fun onEmpty(activity: Activity) = getPerson(activity = activity)
+    fun onSwipeNextItem() = uiState.apply {
+        twyperController.value.currentCardController?.swipeRight()
+    }
+
+    fun onEmpty(activity: Activity) = getUser(activity = activity)
 
     fun onClickInstagram(activity: Activity) = viewModelScope.launch {
-        uiState.item.value.instagram.let {
+        uiState.item.value.socialMediaLink.let {
             if (it.isNotEmpty()) {
                 try {
                     activity.startActivity(
@@ -123,7 +137,7 @@ class MenuViewModel(
         try {
             val spotifyIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(uiState.item.value.spotify)
+                Uri.parse(uiState.item.value.linkPlus)
             )
             activity.startActivity(spotifyIntent)
         } catch (ex: Exception) {
@@ -166,6 +180,8 @@ class MenuViewModel(
     }
 
     companion object {
+        private var ATTEMPTS_GET_CODE = 2
+
         private const val TITLE_WHATS = "Adorei esse aplicativo S2"
         private const val NUMBER_WHATS = "smsto:55"
         private const val PACKAGE_WHATS = "com.whatsapp"
