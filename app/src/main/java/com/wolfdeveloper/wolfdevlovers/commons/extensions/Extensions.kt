@@ -2,6 +2,9 @@ package com.wolfdeveloper.wolfdevlovers.commons.extensions
 
 import android.app.Activity
 import android.widget.Toast
+import java.sql.Date
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
 
 const val EMPTY_STRING = ""
 const val ZERO = 0
@@ -20,5 +23,14 @@ fun Any?.isNull(): Boolean = this == null
 fun Any?.isNotNull(): Boolean = this != null
 
 fun exceptionToast(activity: Activity, id: Int) = activity.run {
-    Toast.makeText(this, getString(id), Toast.LENGTH_LONG).show();
+    Toast.makeText(this, getString(id), Toast.LENGTH_LONG).show()
+}
+
+fun Timestamp.formater(): String {
+    return try {
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm")
+        sdf.format(Date(this.time))
+    } catch (e: Exception) {
+        EMPTY_STRING
+    }
 }

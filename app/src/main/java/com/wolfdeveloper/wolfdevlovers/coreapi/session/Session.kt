@@ -8,6 +8,7 @@ import androidx.security.crypto.MasterKeys
 import com.google.gson.Gson
 import com.wolfdeveloper.wolfdevlovers.application.domain.model.User
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.EMPTY_STRING
+import java.sql.Timestamp
 
 
 class Session(context: Context, val gson: Gson) : ISessionOutput, ISessioInput {
@@ -29,6 +30,16 @@ class Session(context: Context, val gson: Gson) : ISessionOutput, ISessioInput {
         gson.fromJson(sharedPreferences.getString(USER_ROUTER, EMPTY_STRING), User::class.java)
 
     override fun getCode() = sharedPreferences.getString(CODE_ROUTER, EMPTY_STRING).orEmpty()
+
+    override fun getDateFinal(): Timestamp = getUser().dateLife
+
+    override fun isValidade(): Boolean = getUser().run {
+        try {
+            dateLife.time > dateCreated.time
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     override fun setUser(user: User?) = sharedPreferences.edit {
         putString(USER_ROUTER, gson.toJson(user)).apply()

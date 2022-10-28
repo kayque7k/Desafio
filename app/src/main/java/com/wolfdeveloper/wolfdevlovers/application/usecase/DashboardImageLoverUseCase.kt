@@ -8,9 +8,10 @@ import com.wolfdeveloper.wolfdevlovers.commons.extensions.safeRunDispatcher
 class DashboardImageLoverUseCase(
     private val postRepository: PostRepository
 ) {
-    suspend fun execute(uri: Uri,id: Int) = safeRunDispatcher {
+    suspend fun execute(uri: Uri,id: Int,code: String) = safeRunDispatcher {
         postRepository.image(
             uri = uri,
+            code = code,
             post = Post().apply {
                 this.id = id
             }

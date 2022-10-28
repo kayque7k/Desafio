@@ -29,12 +29,13 @@
     <string name="dash_name">Digite seu nome</string>
     <string name="dash_his_name">Digite o nome dele/dela</string>
     <string name="dash_plus">Digite aqui um texto para a area plus</string>
-    <string name="dash_spotify">Cole um link a playslist do spotify</string>
+    <string name="dash_link_plus">Cole um link para acessar na area plus</string>
     <string name="dash_instagram">Digite aqui seu @ do instagram</string>
-    <string name="dash_whatssap">Digite aqui seu whatssap com o DDD</string>
+    <string name="dash_whatssap">Digite aqui seu whatssap com o DDI e DDD</string>
 
-    <string name="dash_his_text">Digite aqui um texto detalhado para ele/ela</string>
-    <string name="dash_his_music">Cole um link do youtube(Musica) para ele/ela</string>
+    <string name="dash_his_text">Digite aqui um texto detalhado</string>
+    <string name="dash_his_music">Cole um link para os detalhes</string>
+    <string name="dash_validate_code">Este codigo é valido até</string>
 
     <string name="dash_image_profile">imagem do perfil</string>
     <string name="dash_image_background">imagem de fundo</string>
@@ -45,7 +46,7 @@
     <string name="dash_loading">Carregando dados...</string>
     <string name="dash_success_code">Codigo: %s</string>
     <string name="dash_success_code_copy">Codigo copiado com sucesso</string>
-    <string name="dash_button_create">Criar</string>
+    <string name="dash_button_create">Ainda nao tem um codigo?</string>
     <string name="dash_button_access">Acessar</string>
 
 

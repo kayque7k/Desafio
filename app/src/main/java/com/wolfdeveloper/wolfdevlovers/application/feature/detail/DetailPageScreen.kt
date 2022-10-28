@@ -140,7 +140,7 @@ fun Header(
 ) = Column(
     modifier = Modifier
         .padding(
-            top = Size.Size4,
+            top = Size.Size24,
             bottom = Size.Size4,
             start = Size.Size16,
             end = Size.Size16,

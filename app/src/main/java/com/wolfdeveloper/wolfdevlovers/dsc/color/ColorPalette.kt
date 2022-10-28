@@ -5,6 +5,7 @@ import androidx.compose.ui.res.colorResource
 import com.wolfdeveloper.wolfdevlovers.R
 
 object ColorPalette {
+    val System @Composable get() = colorResource(id = R.color.system)
     val White @Composable get() = colorResource(id = android.R.color.white)
     val SteelGrey @Composable get() = colorResource(id = R.color.steel_grey)
     val CharcoalGrey @Composable get() = colorResource(id = R.color.charcoal_grey)

@@ -13,7 +13,8 @@ object LoverMapper {
         id = id,
         image = image,
         textPublication = textPublication,
-        link = link
+        link = link,
+        dateCreated = dateCreated
     )
 
     fun List<Post>.toLoverInputList() = map {
@@ -24,6 +25,7 @@ object LoverMapper {
         id = id,
         image = image,
         textPublication = textPublication,
-        link = textPublication
+        link = link,
+        dateCreated = null
     )
 }

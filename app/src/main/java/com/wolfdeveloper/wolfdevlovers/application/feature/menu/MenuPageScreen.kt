@@ -1,6 +1,7 @@
 package com.wolfdeveloper.wolfdevlovers.application.feature.menu
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
@@ -185,6 +186,7 @@ fun ScreenContent(
     onClickBlock: () -> Unit,
     onClickinsert: () -> Unit
 ) = Scaffold(
+    backgroundColor = Color.Transparent,
     modifier = Modifier
         .fillMaxSize(),
     floatingActionButton = {
@@ -204,7 +206,7 @@ fun ScreenContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        SpacerVertical(dp = Size.Size50)
+        SpacerVertical(dp = Size.Size64)
         Header(
             uiState = uiState,
             onClickInstagram = onClickInstagram,
@@ -253,10 +255,10 @@ fun Header(
                 contentDescription = stringResource(id = R.string.accessibily_menu_profile)
             )
         }
-        SpacerHorizontal(dp = Size.Size16)
+        SpacerHorizontal(dp = Size.Size8)
         Text(
             modifier = Modifier
-                .padding(start = Size.Size32)
+                .padding(start = Size.Size16)
                 .weight(Weight.Weight_1),
             text = uiState.item.collectAsState().value.name,
             maxLines = MAX_LINE_DEFAULT,

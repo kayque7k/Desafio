@@ -2,8 +2,10 @@ package com.wolfdeveloper.wolfdevlovers.application.domain.model
 
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.EMPTY_STRING
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.ZERO
+import java.sql.Date
+import java.sql.Timestamp
 
-class User(
+data class User(
     var id: Int = ZERO,
     var myName: String = EMPTY_STRING,
     var myImage: String = EMPTY_STRING,
@@ -14,5 +16,9 @@ class User(
     var whatssap: String = EMPTY_STRING,
     var socialMediaLink: String = EMPTY_STRING,
     var code: String = EMPTY_STRING,
+    var dateLife: Timestamp = Timestamp(System.currentTimeMillis()),
+    var dateCreated: Timestamp = Timestamp(System.currentTimeMillis()),
+    var timeLife: Int = ZERO,
+    var attempts: Int = ZERO,
     var posts: List<Post> = listOf()
 )

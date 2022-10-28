@@ -10,9 +10,10 @@ import retrofit2.http.Part
 interface LoverApi {
 
     @Multipart
-    @PUT("lover/image/{id}")
+    @PUT("lover/upload/image/{id}/{code}")
     suspend fun image(
         @Path("id") id: Int,
+        @Path("code") code: String,
         @Part file: MultipartBody.Part
     ): PostResponse
 }

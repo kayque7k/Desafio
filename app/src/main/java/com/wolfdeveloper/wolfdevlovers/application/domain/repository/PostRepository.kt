@@ -5,5 +5,5 @@ import com.wolfdeveloper.wolfdevlovers.application.domain.model.Post
 
 interface PostRepository {
 
-    suspend fun image(uri: Uri, post: Post): Post
+    suspend fun image(uri: Uri, post: Post,code: String): Post
 }

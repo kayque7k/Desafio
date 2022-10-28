@@ -18,6 +18,10 @@ object UserMapper {
         whatssap = whatssap,
         socialMediaLink = socialMediaLink,
         code = code,
+        dateCreated = dateCreated,
+        dateLife = dateLife,
+        timeLife = timeLife,
+        attempts = attempts,
         posts = lovers.toLoverList()
     )
 
@@ -32,6 +36,10 @@ object UserMapper {
         whatssap = whatssap,
         socialMediaLink = socialMediaLink,
         code = code,
+        dateCreated = null,
+        dateLife = null,
+        timeLife = timeLife,
+        attempts = attempts,
         lovers = posts.toLoverInputList()
     )
 

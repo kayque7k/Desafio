@@ -40,11 +40,7 @@ class DetailViewModel(
     fun onClickMusic(activity: Activity, url: String) {
         val intentApp = Intent(
             Intent.ACTION_VIEW, Uri.parse(
-                "$APP_YOUTUBE${
-                    url.replace(
-                        URL_YOUTUBE, EMPTY_STRING
-                    )
-                }"
+                url.replace(URL_YOUTUBE, EMPTY_STRING)
             )
         )
         val intentBrowser = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -62,11 +58,7 @@ class DetailViewModel(
     fun getDetails(activity: Activity, id: Int) = viewModelScope.launch {
         uiState.run {
             screenState.value = ScreenState.ScreenLoading
-            when (val result = detailsUserUseCase.execute(
-                load = {
-                    screenState.value = ScreenState.ScreenLoading
-                }
-            )) {
+            when (val result = detailsUserUseCase.execute()) {
                 is Result.Success -> {
                     if (result.data.isNull()) {
                         dashboardPopStack(activity = activity)

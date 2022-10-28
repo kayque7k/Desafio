@@ -42,12 +42,8 @@ class MenuViewModel(
             return@run
         }
         viewModelScope.launch {
-            loadingProduct.value = true
-            when (val result = userUseCase.execute(
-                load = {
-                    screenState.value = ScreenState.ScreenLoading
-                }
-            )) {
+            screenState.value = ScreenState.ScreenLoading
+            when (val result = userUseCase.execute()) {
                 is Result.Success -> {
                     if (result.data.isNull()) {
                         dashboardPopStack(activity = activity)
@@ -62,7 +58,6 @@ class MenuViewModel(
                     screenState.value = ScreenState.ScreenError
                 }
             }
-            loadingProduct.value = false
         }
     }
 
@@ -81,16 +76,14 @@ class MenuViewModel(
 
     fun onSwipeRightItem(itemVO: ItemCardVO) = uiState.apply {
         item.value.cardsVO.remove(itemVO)
-        twyperController.value.currentCardController?.onDragEnd()
     }
 
     fun onSwipeLeftItem() = uiState.apply {
-        twyperController.value.currentCardController?.onDragCancel()
         twyperController.value.currentCardController?.swipeRight()
     }
 
     fun onSwipeNextItem() = uiState.apply {
-        twyperController.value.currentCardController?.swipeRight()
+        twyperController.value.swipeRight()
     }
 
     fun onEmpty(activity: Activity) = getUser(activity = activity)
@@ -124,7 +117,13 @@ class MenuViewModel(
 
     fun onClickChat(activity: Activity) = viewModelScope.launch {
         try {
-            val uri = Uri.parse("$NUMBER_WHATS${uiState.item.value.number}")
+            val uri =
+                Uri.parse("$NUMBER_WHATS${uiState.item.value.number
+                    .replace(" ", EMPTY_STRING)
+                    .replace("(", EMPTY_STRING)
+                    .replace(")", EMPTY_STRING)
+                    .replace("-", EMPTY_STRING)
+                }")
             val i = Intent(Intent.ACTION_SENDTO, uri)
             i.setPackage(PACKAGE_WHATS)
             activity.startActivity(Intent.createChooser(i, TITLE_WHATS))
@@ -169,21 +168,20 @@ class MenuViewModel(
         data class NavigateTo(val navigation: Navigation) : ScreenEvent()
     }
 
-    class UiState {
-        val screenState = MutableStateFlow<ScreenState>(ScreenState.ScreenContent)
-        val loadingProduct = MutableStateFlow(false)
-        val openDialogFavorite = MutableStateFlow(false)
-
-        val twyperController = MutableStateFlow<TwyperController>(TwyperControllerImpl())
-
-        val item = MutableStateFlow(ItemVO())
-    }
+    data class UiState(
+        val screenState: MutableStateFlow<ScreenState> = MutableStateFlow<ScreenState>(ScreenState.ScreenContent),
+        val openDialogFavorite: MutableStateFlow<Boolean> = MutableStateFlow(false),
+        val twyperController: MutableStateFlow<TwyperController> = MutableStateFlow<TwyperController>(
+            TwyperControllerImpl()
+        ),
+        val item: MutableStateFlow<ItemVO> = MutableStateFlow(ItemVO())
+    )
 
     companion object {
         private var ATTEMPTS_GET_CODE = 2
 
         private const val TITLE_WHATS = "Adorei esse aplicativo S2"
-        private const val NUMBER_WHATS = "smsto:55"
+        private const val NUMBER_WHATS = "smsto"
         private const val PACKAGE_WHATS = "com.whatsapp"
         private const val PACKAGE_INSTAGRAM = "com.instagram.android"
     }

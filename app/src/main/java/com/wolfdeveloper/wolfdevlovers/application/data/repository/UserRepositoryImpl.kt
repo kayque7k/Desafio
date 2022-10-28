@@ -12,6 +12,7 @@ import com.wolfdeveloper.wolfdevlovers.application.domain.repository.UserReposit
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.QUALITY_IMAGE
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.isNull
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.isZero
+import com.wolfdeveloper.wolfdevlovers.coreapi.intercept.BASE
 import com.wolfdeveloper.wolfdevlovers.coreapi.intercept.DOCUMENT
 import com.wolfdeveloper.wolfdevlovers.coreapi.intercept.FORM_DATA
 import com.wolfdeveloper.wolfdevlovers.coreapi.session.ISessioInput
@@ -29,13 +30,18 @@ class UserRepositoryImpl(
     private val context: Context
 ) : UserRepository {
 
-    override suspend fun get(code: String, load: () -> Unit): User? {
+    override suspend fun get(code: String): User? {
         var user = output.getUser()
         if (user.isNull()) {
-            load.invoke()
             user = productApi.get(code).toUser()
             if (user.id.isZero()) {
                 user = null
+            } else {
+                user.myImage = "${BASE}user/image/${code}"
+                user.backgroundImage = "${BASE}user/background/${code}"
+                user.posts.forEach {
+                    it.image = "${BASE}lover/image/${it.id}/$code"
+                }
             }
             input.setUser(user)
         }

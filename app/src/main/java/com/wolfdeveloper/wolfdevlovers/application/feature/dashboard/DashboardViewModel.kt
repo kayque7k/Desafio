@@ -3,6 +3,10 @@ package com.wolfdeveloper.wolfdevlovers.application.feature.dashboard
 import android.app.Activity
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
@@ -15,11 +19,6 @@ import com.wolfdeveloper.wolfdevlovers.application.usecase.DashboardBackgroundUs
 import com.wolfdeveloper.wolfdevlovers.application.usecase.DashboardImageLoverUseCase
 import com.wolfdeveloper.wolfdevlovers.application.usecase.DashboardInsertUseCase
 import com.wolfdeveloper.wolfdevlovers.application.usecase.DashboardProfileUseCase
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.isNotNull
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.isNull
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.Result
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.isZero
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.EMPTY_STRING
 import com.wolfdeveloper.wolfdevlovers.commons.viewModel.ChannelEventSenderImpl
 import com.wolfdeveloper.wolfdevlovers.commons.viewModel.EventSender
 import com.wolfdeveloper.wolfdevlovers.coreapi.session.ISessioInput
@@ -27,6 +26,9 @@ import com.wolfdeveloper.wolfdevlovers.coreapi.session.ISessionOutput
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import com.wolfdeveloper.wolfdevlovers.R
+import com.wolfdeveloper.wolfdevlovers.commons.extensions.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class DashboardViewModel(
     private val dashboardInsertUseCase: DashboardInsertUseCase,
@@ -39,22 +41,23 @@ class DashboardViewModel(
 
     val uiState = UiState()
 
-    fun setup() {
-        output.getCode().let {
-            if (it.isNotEmpty()) {
-                uiState.code.value = it
+    fun setup() = uiState.run {
+        output.let {
+            val code = it.getCode()
+            if (code.isNotEmpty()) {
+                this.code.value = code
+                if (it.isValidade()) {
+                    validate.value = it.getDateFinal().formater()
+                }
             }
         }
     }
+
 
     fun insert(activity: Activity) = uiState.run {
 
         if (name.value.isEmpty()) {
             invalideToast(activity = activity, id = R.string.invalide_name)
-            return@run
-        }
-        if (nameLover.value.isEmpty()) {
-            invalideToast(activity = activity, id = R.string.invalide_his_name)
             return@run
         }
         if (this@run.profileImage.value.isNull()) {
@@ -99,7 +102,6 @@ class DashboardViewModel(
                     }
 
                     this@run.code.value = result.data.code
-
                     this@run.profileImage.value?.let {
                         dashboardProfileUseCase.execute(
                             uri = it,
@@ -121,6 +123,7 @@ class DashboardViewModel(
                             it.image.value?.let {
                                 dashboardImageLoverUseCase.execute(
                                     uri = it,
+                                    code = this@run.code.value,
                                     id = result.data.posts[index].id
                                 )
                             }
@@ -190,7 +193,6 @@ class DashboardViewModel(
         val screenState = MutableStateFlow<ScreenState>(ScreenState.ScreenDashBoard)
 
         val code = mutableStateOf(EMPTY_STRING)
-
         val name = mutableStateOf(EMPTY_STRING)
         val nameLover = mutableStateOf(EMPTY_STRING)
         val plus = mutableStateOf(EMPTY_STRING)
@@ -200,6 +202,7 @@ class DashboardViewModel(
 
         val profileImage = MutableStateFlow<Uri?>(null)
         val backgroundImage = MutableStateFlow<Uri?>(null)
+        val validate = MutableStateFlow(EMPTY_STRING)
 
         val lovers = mutableStateListOf<LoverState>().apply {
             for (i in RANGE_LOVERS) {

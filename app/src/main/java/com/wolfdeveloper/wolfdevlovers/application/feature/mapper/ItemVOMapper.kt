@@ -8,7 +8,6 @@ object ItemVOMapper {
 
     fun User.toItemVO() = ItemVO(
         name = myName,
-        loverName = nameLover,
         socialMediaLink = socialMediaLink,
         number = whatssap,
         imageProfile = myImage,
@@ -23,7 +22,7 @@ object ItemVOMapper {
         ItemCardVO(
             id = it.id,
             link = it.link,
-            name = nameLover,
+            name = myName,
             image = it.image,
             description = it.textPublication
         )
@@ -31,7 +30,6 @@ object ItemVOMapper {
 
     fun User.toItemVOFilter(id: Int) = ItemVO(
         name = myName,
-        loverName = nameLover,
         socialMediaLink = socialMediaLink,
         number = whatssap,
         imageProfile = myImage,
@@ -48,7 +46,7 @@ object ItemVOMapper {
         ItemCardVO(
             id = it.id,
             link = it.link,
-            name = nameLover,
+            name = myName,
             image = it.image,
             description = it.textPublication
         )

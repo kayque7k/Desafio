@@ -21,7 +21,7 @@ class PostRepositoryImpl(
     private val loverApi: LoverApi,
     private val context: Context
 ) : PostRepository {
-    override suspend fun image(uri: Uri, post: Post): Post = context.run {
+    override suspend fun image(uri: Uri, post: Post,code: String): Post = context.run {
         val archive = uri.path?.let { File(it) }
         val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
         val bytes = ByteArrayOutputStream()
@@ -34,6 +34,7 @@ class PostRepositoryImpl(
 
         loverApi.image(
             id = post.id,
+            code = code,
             file = MultipartBody.Part.createFormData(DOCUMENT, archive?.name, requestFile)
         ).toLover()
     }
