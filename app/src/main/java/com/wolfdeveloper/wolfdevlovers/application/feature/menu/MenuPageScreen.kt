@@ -1,23 +1,14 @@
 package com.wolfdeveloper.wolfdevlovers.application.feature.menu
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.NextPlan
-import androidx.compose.material.icons.filled.Redo
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Forum
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,9 +25,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
-import com.github.theapache64.twyper.SwipedOutDirection
-import com.github.theapache64.twyper.Twyper
+import coil.request.ImageRequest
 import com.wolfdeveloper.wolfdevlovers.R
+import com.wolfdeveloper.wolfdevlovers.application.feature.detail.DetailViewModel
 import com.wolfdeveloper.wolfdevlovers.application.feature.main.MainActivity
 import com.wolfdeveloper.wolfdevlovers.application.feature.main.MainViewModel
 import com.wolfdeveloper.wolfdevlovers.application.feature.menu.MenuViewModel.ScreenEvent
@@ -44,6 +35,7 @@ import com.wolfdeveloper.wolfdevlovers.application.feature.menu.MenuViewModel.Ui
 import com.wolfdeveloper.wolfdevlovers.application.feature.viewobject.ItemCardVO
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.MAX_LINE_DEFAULT
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.MAX_LINE_THREE
+import com.wolfdeveloper.wolfdevlovers.commons.extensions.ZERO
 import com.wolfdeveloper.wolfdevlovers.dsc.color.ColorPalette
 import com.wolfdeveloper.wolfdevlovers.dsc.component.SpacerVertical
 import com.wolfdeveloper.wolfdevlovers.dsc.component.ImageCircle
@@ -51,14 +43,13 @@ import com.wolfdeveloper.wolfdevlovers.dsc.component.SpacerHorizontal
 import com.wolfdeveloper.wolfdevlovers.dsc.component.rippleClickable
 import com.wolfdeveloper.wolfdevlovers.dsc.component.ImageLoader
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Font
+import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Radius
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Size
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Weight
 
-private const val STACKCOUNT = 10
-private const val PADDING = 7f
 private const val HEIGHT_BASE = 600
-private const val HEIGHT_MIN = 1.8
-private const val HEIGHT_MAX = 1.5
+private const val HEIGHT_MIN = 1.5
+private const val HEIGHT_MAX = 2
 
 @Composable
 fun MenuPageScreen(
@@ -68,9 +59,11 @@ fun MenuPageScreen(
     val activity = LocalContext.current as MainActivity
 
     LaunchedEffect(viewModel) {
-        viewModel.getUser(
-            activity = activity
-        )
+        viewModel.apply {
+            getUser(
+                activity = activity
+            )
+        }
     }
 
     Screen(
@@ -79,20 +72,13 @@ fun MenuPageScreen(
             flowViewModel.setIdLover(it)
             viewModel.onClickItem()
         },
-        onEmpty = {
-            viewModel.onEmpty(activity = activity)
-        },
-        onSwipeRightItem = viewModel::onSwipeRightItem,
-        onSwipeLeftItem = viewModel::onSwipeLeftItem,
-        onSwipeNextItem = viewModel::onSwipeNextItem,
         onClickChat = { viewModel.onClickChat(activity = activity) },
+        onClickLink = { viewModel.onClickLink(activity = activity, url = it) },
         onClickInstagram = { viewModel.onClickInstagram(activity = activity) },
-        onClickSpotify = { viewModel.onClickSpotify(activity = activity) },
+        onClickAccess = { viewModel.onClickAccess(activity = activity) },
         onClickBlock = viewModel::onClickBlock,
         onClickinsert = viewModel::onClickinsert,
-        onRetry = {
-            viewModel.onRetry(activity)
-        }
+        onRetry = { viewModel.onRetry(activity) }
     )
 
     EventConsumer(
@@ -107,22 +93,24 @@ fun MenuPageScreen(
 private fun Screen(
     uiState: UiState,
     onClickItem: (Int) -> Unit,
-    onEmpty: () -> Unit,
-    onSwipeRightItem: (ItemCardVO) -> Unit,
-    onSwipeLeftItem: () -> Unit,
-    onSwipeNextItem: () -> Unit,
     onClickChat: () -> Unit,
     onClickInstagram: () -> Unit,
-    onClickSpotify: () -> Unit,
+    onClickAccess: () -> Unit,
+    onClickLink: (url: String) -> Unit,
     onClickBlock: () -> Unit,
     onClickinsert: () -> Unit,
     onRetry: () -> Unit
 ) = MaterialTheme {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         if (uiState.item.collectAsState().value.imageBackground.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(
-                    uiState.item.collectAsState().value.imageBackground,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(uiState.item.collectAsState().value.imageBackground)
+                        .build()
                 ),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
@@ -139,14 +127,11 @@ private fun Screen(
                 is MenuViewModel.ScreenState.ScreenContent -> ScreenContent(
                     uiState = uiState,
                     onClickItem = onClickItem,
-                    onEmpty = onEmpty,
-                    onSwipeRightItem = onSwipeRightItem,
-                    onSwipeLeftItem = onSwipeLeftItem,
-                    onSwipeNextItem = onSwipeNextItem,
                     onClickChat = onClickChat,
                     onClickInstagram = onClickInstagram,
                     onClickBlock = onClickBlock,
-                    onClickinsert = onClickinsert
+                    onClickinsert = onClickinsert,
+                    onClickLink = onClickLink
                 )
                 is MenuViewModel.ScreenState.ScreenError -> {
                     onRetry.invoke()
@@ -167,7 +152,7 @@ private fun Screen(
                     onClickSucess = {
                         uiState.openDialogFavorite.value = false
                     },
-                    onClickSpotify = onClickSpotify
+                    onClickAccess = onClickAccess
                 )
             }
     }
@@ -177,53 +162,30 @@ private fun Screen(
 fun ScreenContent(
     uiState: UiState,
     onClickItem: (Int) -> Unit,
-    onEmpty: () -> Unit,
-    onSwipeRightItem: (ItemCardVO) -> Unit,
-    onSwipeLeftItem: () -> Unit,
-    onSwipeNextItem: () -> Unit,
     onClickInstagram: () -> Unit,
     onClickChat: () -> Unit,
     onClickBlock: () -> Unit,
-    onClickinsert: () -> Unit
-) = Scaffold(
-    backgroundColor = Color.Transparent,
+    onClickinsert: () -> Unit,
+    onClickLink: (url: String) -> Unit
+) = Column(
     modifier = Modifier
-        .fillMaxSize(),
-    floatingActionButton = {
-        FloatingActionButton(
-            onClick = { onSwipeNextItem.invoke() },
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.onPrimary
-        ) {
-            Icon(Icons.Filled.Redo, stringResource(id = R.string.accessibily_menu_next))
-        }
-    },
-    floatingActionButtonPosition = FabPosition.End,
-    isFloatingActionButtonDocked = false
+        .fillMaxSize()
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        SpacerVertical(dp = Size.Size64)
-        Header(
-            uiState = uiState,
-            onClickInstagram = onClickInstagram,
-            onClickChat = onClickChat,
-            onClickBlock = onClickBlock,
-            onClickinsert = onClickinsert
-        )
-        SpacerVertical(dp = Size.Size16)
-        ScreenTwyper(
-            uiState = uiState,
-            onClickItem = onClickItem,
-            onSwipeRightItem = onSwipeRightItem,
-            onSwipeLeftItem = onSwipeLeftItem,
-            onEmpty = onEmpty
-        )
-        SpacerVertical(dp = Size.Size16)
-    }
+    SpacerVertical(dp = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+    SpacerVertical(dp = Size.Size8)
+    Header(
+        uiState = uiState,
+        onClickInstagram = onClickInstagram,
+        onClickChat = onClickChat,
+        onClickBlock = onClickBlock,
+        onClickinsert = onClickinsert
+    )
+    ScreenCards(
+        uiState = uiState,
+        onClickItem = onClickItem,
+        onClickLink = onClickLink
+    )
+    SpacerVertical(dp = Size.Size16)
 }
 
 @Composable
@@ -236,10 +198,7 @@ fun Header(
 ) = Column(
     modifier = Modifier
         .padding(
-            top = Size.Size4,
-            bottom = Size.Size4,
-            start = Size.Size16,
-            end = Size.Size16,
+            horizontal = Size.Size8
         )
         .fillMaxWidth(),
     verticalArrangement = Arrangement.Center,
@@ -309,36 +268,22 @@ fun Header(
 }
 
 @Composable
-private fun ScreenTwyper(
+private fun ScreenCards(
     uiState: UiState,
     onClickItem: (Int) -> Unit,
-    onSwipeRightItem: (ItemCardVO) -> Unit,
-    onSwipeLeftItem: () -> Unit,
-    onEmpty: () -> Unit,
+    onClickLink: (url: String) -> Unit,
 ) = Column(
     modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = Size.Size8),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally
+        .padding(end = Size.Size8, start = Size.Size8, top = Size.Size8)
+        .verticalScroll(rememberScrollState())
 ) {
-    Twyper(
-        items = uiState.item.collectAsState().value.cardsVO,
-        stackCount = STACKCOUNT,
-        paddingBetweenCards = PADDING,
-        twyperController = uiState.twyperController.collectAsState().value,
-        onItemRemoved = { item, direction ->
-            when (direction) {
-                SwipedOutDirection.LEFT -> onSwipeLeftItem.invoke()
-                SwipedOutDirection.RIGHT -> onSwipeRightItem.invoke(item)
-            }
-        },
-        onEmpty = onEmpty,
-
-        ) { item ->
+    uiState.item.collectAsState().value.cardsVO.reversed().forEachIndexed { index, it ->
         Item(
-            it = item,
-            onClickItem = onClickItem
+            it = it,
+            onClickItem = onClickItem,
+            first = index == ZERO,
+            onClickLink = onClickLink
         )
     }
 }
@@ -347,12 +292,22 @@ private fun ScreenTwyper(
 fun Item(
     it: ItemCardVO,
     onClickItem: (Int) -> Unit,
+    onClickLink: (url: String) -> Unit,
+    first: Boolean = false
 ) = Card(
     modifier = Modifier
         .fillMaxWidth()
+        .padding(
+            bottom = Size.Size16, top = if (first) {
+                Size.Size16
+            } else {
+                Size.Size2
+            }
+        )
         .rippleClickable {
             onClickItem.invoke(it.id)
         },
+    shape = RoundedCornerShape(Radius.Radius8),
     backgroundColor = ColorPalette.White
 ) {
     Column {
@@ -389,6 +344,37 @@ fun Item(
         )
         SpacerVertical(dp = Size.Size8)
     }
+    HeaderCard(itenCardVO = it, onClickLink = onClickLink)
+}
+
+
+@Composable
+fun HeaderCard(
+    itenCardVO: ItemCardVO,
+    onClickLink: (url: String) -> Unit,
+) = Row(
+    modifier = Modifier.fillMaxWidth(),
+    verticalAlignment = Alignment.Top,
+    horizontalArrangement = Arrangement.End,
+) {
+    if (itenCardVO.link.isNotEmpty()) {
+        IconButton(
+            modifier = Modifier
+                .padding(Size.Size8),
+            onClick = {
+                onClickLink.invoke(
+                    itenCardVO.link
+                )
+            }
+        ) {
+            Icon(
+                modifier = Modifier.size(Size.Size24),
+                painter = painterResource(id = R.drawable.ic_link),
+                contentDescription = stringResource(id = R.string.accessibily_details_play),
+                tint = Color.Unspecified
+            )
+        }
+    }
 }
 
 @Composable
@@ -417,7 +403,7 @@ fun AlertDialog(
     access: String,
     isSpotify: Boolean,
     onClickSucess: () -> Unit,
-    onClickSpotify: () -> Unit
+    onClickAccess: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = { },
@@ -427,7 +413,7 @@ fun AlertDialog(
         },
         dismissButton = {
             if (isSpotify) {
-                TextButton(onClick = onClickSpotify)
+                TextButton(onClick = onClickAccess)
                 { Text(text = access) }
             }
         },

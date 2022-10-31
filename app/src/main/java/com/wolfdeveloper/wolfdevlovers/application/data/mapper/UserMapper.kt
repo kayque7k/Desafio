@@ -5,6 +5,8 @@ import com.wolfdeveloper.wolfdevlovers.application.data.mapper.LoverMapper.toLov
 import com.wolfdeveloper.wolfdevlovers.application.data.mapper.LoverMapper.toLoverList
 import com.wolfdeveloper.wolfdevlovers.application.data.response.UserResponse
 import com.wolfdeveloper.wolfdevlovers.application.domain.model.User
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
 
 object UserMapper {
     fun UserResponse.toUser() = User(
@@ -18,8 +20,8 @@ object UserMapper {
         whatssap = whatssap,
         socialMediaLink = socialMediaLink,
         code = code,
-        dateCreated = dateCreated,
-        dateLife = dateLife,
+        dateCreated = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS+00:00").parse(dateCreated).run { Timestamp(time) },
+        dateLife = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS+00:00").parse(dateLife).run { Timestamp(time) },
         timeLife = timeLife,
         attempts = attempts,
         posts = lovers.toLoverList()

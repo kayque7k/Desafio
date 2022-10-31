@@ -13,10 +13,7 @@ import com.wolfdeveloper.wolfdevlovers.application.feature.main.MainViewModel.Na
 import com.wolfdeveloper.wolfdevlovers.application.feature.mapper.ItemVOMapper.toItemVOFilter
 import com.wolfdeveloper.wolfdevlovers.application.feature.viewobject.ItemVO
 import com.wolfdeveloper.wolfdevlovers.application.usecase.DetailsUserUseCase
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.EMPTY_STRING
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.Result
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.exceptionToast
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.isNull
+import com.wolfdeveloper.wolfdevlovers.commons.extensions.*
 import com.wolfdeveloper.wolfdevlovers.commons.viewModel.ChannelEventSenderImpl
 import com.wolfdeveloper.wolfdevlovers.commons.viewModel.EventSender
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,34 +23,13 @@ class DetailViewModel(
     private val detailsUserUseCase: DetailsUserUseCase
 ) : ViewModel(), EventSender<ScreenEvent> by ChannelEventSenderImpl() {
 
-    companion object {
-        private const val APP_YOUTUBE = "vnd.youtube:"
-        private const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
-    }
-
     val uiState = UiState()
 
     fun onClickBack() = viewModelScope.launch {
         sendEvent(event = ScreenEvent.GoBack)
     }
 
-    fun onClickMusic(activity: Activity, url: String) {
-        val intentApp = Intent(
-            Intent.ACTION_VIEW, Uri.parse(
-                url.replace(URL_YOUTUBE, EMPTY_STRING)
-            )
-        )
-        val intentBrowser = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        try {
-            activity.startActivity(intentApp)
-        } catch (ex: ActivityNotFoundException) {
-            try {
-                activity.startActivity(intentBrowser)
-            } catch (ex: Exception) {
-                exceptionToast(activity, R.string.error_youtube)
-            }
-        }
-    }
+    fun onClickLink(activity: Activity, url: String) = openLink(activity,url)
 
     fun getDetails(activity: Activity, id: Int) = viewModelScope.launch {
         uiState.run {

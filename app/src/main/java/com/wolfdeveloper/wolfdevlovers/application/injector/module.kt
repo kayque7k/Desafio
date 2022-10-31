@@ -27,9 +27,7 @@ import org.koin.dsl.module
 
 val viewmodelModule = module {
     viewModel {
-        MainViewModel(
-            output = get()
-        )
+        MainViewModel()
     }
     viewModel {
         DashboardViewModel(

@@ -14,10 +14,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +22,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -34,6 +30,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -56,6 +53,7 @@ import com.wolfdeveloper.wolfdevlovers.dsc.component.rippleClickable
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Font
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Radius
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Size
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun DashboardPageScreen(
@@ -275,55 +273,68 @@ fun ScreenContent(
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()
     )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(horizontal = Size.Size8)
             .verticalScroll(rememberScrollState())
     ) {
-        SpacerVertical(dp = Size.Size64)
-        Header()
-        SpacerVertical(dp = Size.Size16)
-        formData(uiState)
-        SpacerVertical(dp = Size.Size16)
-        TitleLover()
-        SpacerVertical(dp = Size.Size16)
-        HorizontalPager(
-            count = uiState.lovers.size,
-            state = rememberPagerState(),
+        SpacerVertical(WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+        SpacerVertical(Size.Size16)
+        Card(
+            shape = RoundedCornerShape(Radius.Radius8)
         ) {
-            formDataLovers(lover = uiState.lovers[this.currentPage], this.currentPage + ONE)
-        }
-        SpacerVertical(dp = Size.Size16)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Size.Size32),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onClick,
-                shape = RoundedCornerShape(PERCENT_RADIUS_BUTTON),
-                contentPadding = PaddingValues(
-                    start = Size.Size32,
-                    end = Size.Size32,
-                    top = Size.Size16,
-                    bottom = Size.Size16
-                )
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
+                SpacerVertical(dp = Size.Size16)
+                Header()
+                SpacerVertical(dp = Size.Size16)
+                formData(uiState)
+                SpacerVertical(dp = Size.Size16)
+                TitlePageView()
+                SpacerVertical(dp = Size.Size16)
+                HorizontalPager(
+                    count = uiState.lovers.size,
+                    state = rememberPagerState(),
+                ) {
+                    formDataLovers(lover = uiState.lovers[this.currentPage], this.currentPage + ONE)
+                }
+                SpacerVertical(dp = Size.Size16)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Size.Size32),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onClick,
+                        shape = RoundedCornerShape(PERCENT_RADIUS_BUTTON),
+                        contentPadding = PaddingValues(
+                            start = Size.Size32,
+                            end = Size.Size32,
+                            top = Size.Size16,
+                            bottom = Size.Size16
+                        )
+                    ) {
 
-                Text(stringResource(id = R.string.dash_button))
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Icon(
-                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                    painter = painterResource(id = R.drawable.ic_next),
-                    contentDescription = stringResource(id = R.string.dash_button_next),
-                    tint = Color.Unspecified
-                )
+                        Text(stringResource(id = R.string.dash_button))
+                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                        Icon(
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                            painter = painterResource(id = R.drawable.ic_next),
+                            contentDescription = stringResource(id = R.string.dash_button_next),
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
+                SpacerVertical(dp = Size.Size16)
             }
         }
-        SpacerVertical(dp = Size.Size32)
+        SpacerVertical(Size.Size16)
     }
 }
 
@@ -477,8 +488,8 @@ private fun formData(uiState: UiState) = Column(
             uiState
         )
     }
-
     SpacerVertical()
+    DropDownTimeLife(uiState = uiState)
 }
 
 @Composable
@@ -495,9 +506,11 @@ fun ImageProfile(uiState: UiState) {
         backgroundColor = ColorPalette.White
     ) {
         Column(
-            modifier = Modifier.rippleClickable {
-                launcher.launch(LAUNCH_IMAGE)
-            }.padding(Size.Size8),
+            modifier = Modifier
+                .rippleClickable {
+                    launcher.launch(LAUNCH_IMAGE)
+                }
+                .padding(Size.Size8),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -519,8 +532,10 @@ fun ImageProfile(uiState: UiState) {
                 )
             } else {
                 Image(
-                    painter = rememberAsyncImagePainter(
-                        uiState.profileImage.value
+                    rememberAsyncImagePainter(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(uiState.profileImage.value)
+                            .build()
                     ),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
@@ -546,9 +561,11 @@ fun ImageBackground(uiState: UiState) {
         backgroundColor = ColorPalette.White
     ) {
         Column(
-            modifier = Modifier.rippleClickable {
-                launcher.launch(LAUNCH_IMAGE)
-            }.padding(Size.Size8),
+            modifier = Modifier
+                .rippleClickable {
+                    launcher.launch(LAUNCH_IMAGE)
+                }
+                .padding(Size.Size8),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -570,8 +587,10 @@ fun ImageBackground(uiState: UiState) {
                 )
             } else {
                 Image(
-                    painter = rememberAsyncImagePainter(
-                        uiState.backgroundImage.value
+                    rememberAsyncImagePainter(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(uiState.backgroundImage.value)
+                            .build()
                     ),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
@@ -583,7 +602,7 @@ fun ImageBackground(uiState: UiState) {
 }
 
 @Composable
-fun TitleLover() = Column(
+fun TitlePageView() = Column(
     modifier = Modifier
         .padding(
             top = Size.Size4,
@@ -603,6 +622,61 @@ fun TitleLover() = Column(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold
     )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun DropDownTimeLife(uiState: UiState) = uiState.run {
+    var expanded by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .padding(
+                top = Size.Size4,
+                bottom = Size.Size4
+            )
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                expanded = !expanded
+            }
+        ) {
+            TextField(
+                readOnly = true,
+                value = selectedTimeLife.value.first,
+                onValueChange = { },
+                label = { Text(stringResource(id = R.string.dash_time_life)) },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent
+                )
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }
+            ) {
+                uiState.optionsTimeLife.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        onClick = {
+                            selectedTimeLife.value = selectionOption
+                            expanded = false
+                        }
+                    ) {
+                        Text(text = selectionOption.first)
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -717,8 +791,10 @@ fun ImageLover(lover: UiState.LoverState) {
             )
         } else {
             Image(
-                painter = rememberAsyncImagePainter(
-                    lover.image.value
+                rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(lover.image.value)
+                        .build()
                 ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,

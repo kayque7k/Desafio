@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.wolfdeveloper.wolfdevlovers.dsc.color.ColorPalette
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Size
 
@@ -38,10 +40,15 @@ fun ImageLoader(
             )
         }
     }
+
     Image(
         modifier = modifier,
+        painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(image)
+                .build()
+        ),
         contentScale = ContentScale.Crop,
-        painter = rememberAsyncImagePainter(image),
         contentDescription = contentDescription
     )
 }

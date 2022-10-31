@@ -4,14 +4,13 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import com.google.gson.Gson
 import com.wolfdeveloper.wolfdevlovers.application.data.api.UserApi
 import com.wolfdeveloper.wolfdevlovers.application.data.mapper.UserMapper.toUser
 import com.wolfdeveloper.wolfdevlovers.application.data.mapper.UserMapper.toUserInput
 import com.wolfdeveloper.wolfdevlovers.application.domain.model.User
 import com.wolfdeveloper.wolfdevlovers.application.domain.repository.UserRepository
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.QUALITY_IMAGE
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.isNull
-import com.wolfdeveloper.wolfdevlovers.commons.extensions.isZero
+import com.wolfdeveloper.wolfdevlovers.commons.extensions.*
 import com.wolfdeveloper.wolfdevlovers.coreapi.intercept.BASE
 import com.wolfdeveloper.wolfdevlovers.coreapi.intercept.DOCUMENT
 import com.wolfdeveloper.wolfdevlovers.coreapi.intercept.FORM_DATA
@@ -32,7 +31,11 @@ class UserRepositoryImpl(
 
     override suspend fun get(code: String): User? {
         var user = output.getUser()
-        if (user.isNull()) {
+        if (user.isNull() || (
+                    (user?.dateLife != user?.dateCreated) ||
+                            (System.currentTimeMillis() < user?.dateLife?.time.orZero())
+                    )
+        ) {
             user = productApi.get(code).toUser()
             if (user.id.isZero()) {
                 user = null

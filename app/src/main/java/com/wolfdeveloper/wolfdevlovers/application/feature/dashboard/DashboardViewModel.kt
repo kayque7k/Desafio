@@ -48,6 +48,8 @@ class DashboardViewModel(
                 this.code.value = code
                 if (it.isValidade()) {
                     validate.value = it.getDateFinal().formater()
+                } else {
+                    validate.value = EMPTY_STRING
                 }
             }
         }
@@ -85,6 +87,7 @@ class DashboardViewModel(
                     linkPlus = this@run.linkPlus.value
                     whatssap = this@run.whatssap.value
                     socialMediaLink = this@run.socialMediaLink.value
+                    timeLife = this@run.selectedTimeLife.value.second
                     posts = this@run.lovers.filter {
                         !it.text.value.isBlank() && it.image.value.isNotNull()
                     }.map {
@@ -160,6 +163,9 @@ class DashboardViewModel(
         if (this.isNotEmpty()) {
             input.setCode(this)
             input.setUser(null)
+            if (uiState.screenState.value == ScreenState.ScreenSuccess) {
+                uiState.screenState.value = ScreenState.ScreenDashBoard
+            }
             onClickMenu()
         }
     }
@@ -190,6 +196,28 @@ class DashboardViewModel(
     class UiState {
         private val RANGE_LOVERS = 0..4
 
+        private val PERMANET = 0
+        private val MINUTO = 1
+        private val THIRTY_MINUTO = 30
+        private val ONE_HOUR = 60
+        private val THREE_HOUR = ONE_HOUR * 3
+        private val ONE_DAY = ONE_HOUR * 24
+        private val ONE_WEEK = ONE_DAY * 7
+        private val TWO_WEEK = ONE_WEEK * 2
+        private val ONE_MONTH = ONE_DAY * 30
+
+        val optionsTimeLife = listOf(
+            Pair("Permanente", PERMANET),
+            Pair("1 minutos", MINUTO),
+            Pair("30 minutos", THIRTY_MINUTO),
+            Pair("1 hora", ONE_HOUR),
+            Pair("3 horas", THREE_HOUR),
+            Pair("1 dia", ONE_DAY),
+            Pair("1 semana", ONE_WEEK),
+            Pair("2 semana", TWO_WEEK),
+            Pair("1 mes", ONE_MONTH)
+        )
+
         val screenState = MutableStateFlow<ScreenState>(ScreenState.ScreenDashBoard)
 
         val code = mutableStateOf(EMPTY_STRING)
@@ -199,6 +227,7 @@ class DashboardViewModel(
         val linkPlus = mutableStateOf(EMPTY_STRING)
         val socialMediaLink = mutableStateOf(EMPTY_STRING)
         val whatssap = mutableStateOf(EMPTY_STRING)
+        val selectedTimeLife = mutableStateOf(optionsTimeLife.first())
 
         val profileImage = MutableStateFlow<Uri?>(null)
         val backgroundImage = MutableStateFlow<Uri?>(null)

@@ -4,16 +4,12 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.theapache64.twyper.TwyperController
-import com.github.theapache64.twyper.TwyperControllerImpl
 import com.wolfdeveloper.wolfdevlovers.R
 import com.wolfdeveloper.wolfdevlovers.application.feature.main.MainViewModel.Navigation
 import com.wolfdeveloper.wolfdevlovers.application.feature.mapper.ItemVOMapper.toItemVO
 import com.wolfdeveloper.wolfdevlovers.application.feature.menu.MenuViewModel.ScreenEvent
-import com.wolfdeveloper.wolfdevlovers.application.feature.viewobject.ItemCardVO
 import com.wolfdeveloper.wolfdevlovers.application.feature.viewobject.ItemVO
 import com.wolfdeveloper.wolfdevlovers.application.usecase.UserUseCase
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.*
@@ -33,20 +29,16 @@ class MenuViewModel(
     val uiState = UiState()
 
     fun getUser(activity: Activity) = uiState.run {
-        if (item.value.cardsVO.isNotEmpty() &&
-            output.getCode() == item.value.code
-        ) {
-            val list = item.value.cardsVO.toMutableList()
-            item.value.cardsVO.clear()
-            item.value.cardsVO = list
-            return@run
-        }
         viewModelScope.launch {
             screenState.value = ScreenState.ScreenLoading
+            if(output.getCode().isEmpty()){
+                dashboardPopStack()
+            }
             when (val result = userUseCase.execute()) {
                 is Result.Success -> {
                     if (result.data.isNull()) {
-                        dashboardPopStack(activity = activity)
+                        exceptionToast(activity, R.string.error_code)
+                        dashboardPopStack()
                     } else {
                         result.data?.let {
                             item.value = it.toItemVO()
@@ -66,27 +58,16 @@ class MenuViewModel(
             attemptsGetCode--
             getUser(activity = activity)
         } else {
-            dashboardPopStack(activity)
+            exceptionToast(activity, R.string.error_code)
+            dashboardPopStack()
         }
     }
+
+    fun onClickLink(activity: Activity, url: String) = openLink(activity, url)
 
     fun onClickItem() = viewModelScope.launch {
         sendEvent(ScreenEvent.NavigateTo(Navigation.Detail))
     }
-
-    fun onSwipeRightItem(itemVO: ItemCardVO) = uiState.apply {
-        item.value.cardsVO.remove(itemVO)
-    }
-
-    fun onSwipeLeftItem() = uiState.apply {
-        twyperController.value.currentCardController?.swipeRight()
-    }
-
-    fun onSwipeNextItem() = uiState.apply {
-        twyperController.value.swipeRight()
-    }
-
-    fun onEmpty(activity: Activity) = getUser(activity = activity)
 
     fun onClickInstagram(activity: Activity) = viewModelScope.launch {
         uiState.item.value.socialMediaLink.let {
@@ -108,7 +89,7 @@ class MenuViewModel(
                             )
                         )
                     } catch (ex: Exception) {
-                        exceptionToast(activity, R.string.error_instagram)
+                        exceptionToast(activity, R.string.error_link)
                     }
                 }
             }
@@ -118,12 +99,15 @@ class MenuViewModel(
     fun onClickChat(activity: Activity) = viewModelScope.launch {
         try {
             val uri =
-                Uri.parse("$NUMBER_WHATS${uiState.item.value.number
-                    .replace(" ", EMPTY_STRING)
-                    .replace("(", EMPTY_STRING)
-                    .replace(")", EMPTY_STRING)
-                    .replace("-", EMPTY_STRING)
-                }")
+                Uri.parse(
+                    "$NUMBER_WHATS${
+                        uiState.item.value.number
+                            .replace(" ", EMPTY_STRING)
+                            .replace("(", EMPTY_STRING)
+                            .replace(")", EMPTY_STRING)
+                            .replace("-", EMPTY_STRING)
+                    }"
+                )
             val i = Intent(Intent.ACTION_SENDTO, uri)
             i.setPackage(PACKAGE_WHATS)
             activity.startActivity(Intent.createChooser(i, TITLE_WHATS))
@@ -132,17 +116,7 @@ class MenuViewModel(
         }
     }
 
-    fun onClickSpotify(activity: Activity) = viewModelScope.launch {
-        try {
-            val spotifyIntent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(uiState.item.value.linkPlus)
-            )
-            activity.startActivity(spotifyIntent)
-        } catch (ex: Exception) {
-            exceptionToast(activity, R.string.error_spotify)
-        }
-    }
+    fun onClickAccess(activity: Activity) = openLink(activity, uiState.item.value.linkPlus)
 
     fun onClickBlock() = viewModelScope.launch {
         uiState.openDialogFavorite.value = true
@@ -152,8 +126,7 @@ class MenuViewModel(
         sendEvent(ScreenEvent.NavigateTo(Navigation.Dashboard))
     }
 
-    private fun dashboardPopStack(activity: Activity) = viewModelScope.launch {
-        exceptionToast(activity, R.string.error_code)
+    private fun dashboardPopStack() = viewModelScope.launch {
         sendEvent(event = ScreenEvent.NavigateTo(Navigation.DashboardPopStack))
     }
 
@@ -169,11 +142,8 @@ class MenuViewModel(
     }
 
     data class UiState(
-        val screenState: MutableStateFlow<ScreenState> = MutableStateFlow<ScreenState>(ScreenState.ScreenContent),
+        val screenState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.ScreenContent),
         val openDialogFavorite: MutableStateFlow<Boolean> = MutableStateFlow(false),
-        val twyperController: MutableStateFlow<TwyperController> = MutableStateFlow<TwyperController>(
-            TwyperControllerImpl()
-        ),
         val item: MutableStateFlow<ItemVO> = MutableStateFlow(ItemVO())
     )
 

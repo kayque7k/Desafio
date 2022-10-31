@@ -15,8 +15,8 @@ class UserResponse(
     var whatssap: String = EMPTY_STRING,
     var socialMediaLink: String = EMPTY_STRING,
     var code: String = EMPTY_STRING,
-    var dateCreated: Timestamp = Timestamp(System.currentTimeMillis()),
-    var dateLife: Timestamp = Timestamp(System.currentTimeMillis()),
+    var dateCreated: String = EMPTY_STRING,
+    var dateLife: String = EMPTY_STRING,
     var timeLife: Int = ZERO,
     var attempts: Int = ZERO,
     var lovers: List<PostResponse> = listOf()

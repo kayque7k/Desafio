@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lovers</string>
+    <string name="app_name">MeetMe</string>
     <string name="menu_toast">Deslize para os lados</string>
 
     <string name="menu_title_dialog">Area Plus</string>
@@ -48,6 +48,7 @@
     <string name="dash_success_code_copy">Codigo copiado com sucesso</string>
     <string name="dash_button_create">Ainda nao tem um codigo?</string>
     <string name="dash_button_access">Acessar</string>
+    <string name="dash_time_life">Tempo de vida</string>
 
 
     <string name="invalide_name">Nome é um campo obrigatorio</string>
@@ -57,10 +58,8 @@
     <string name="invalide_lovers">a lista de detalhes nao pode ser vazia e imagens sao obrigatorias</string>
     <string name="error_server">Erro de servidor, Tente novamente mais tarde!</string>
 
-    <string name="error_instagram">Erro ao tentar abrir o instagram</string>
     <string name="error_whatssap">Erro ao tentar abrir o whatssap</string>
-    <string name="error_spotify">Erro ao tentar abrir o spotify</string>
-    <string name="error_youtube">Erro ao tentar abrir o youtube</string>
+    <string name="error_link">Erro ao tentar abrir o link</string>
     <string name="error_code">Codigo invalido</string>
 
 </resources>

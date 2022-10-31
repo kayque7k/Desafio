@@ -10,9 +10,7 @@ import com.wolfdeveloper.wolfdevlovers.commons.extensions.ZERO
 import com.wolfdeveloper.wolfdevlovers.commons.extensions.isNull
 import com.wolfdeveloper.wolfdevlovers.coreapi.session.ISessionOutput
 
-class MainViewModel(
-    private val output: ISessionOutput
-) : ViewModel(), EventSender<Navigation> by ChannelEventSenderImpl() {
+class MainViewModel() : ViewModel(), EventSender<Navigation> by ChannelEventSenderImpl() {
 
     var idLover: Int = ZERO
         private set
@@ -21,8 +19,7 @@ class MainViewModel(
         this.idLover = id
     }
 
-    fun startDestination() =
-        if (output.getUser().isNull()) Navigation.Dashboard else Navigation.Menu
+    fun startDestination() = Navigation.Menu
 
     fun navigate(event: Navigation) = viewModelScope.sendEvent(event = event)
 

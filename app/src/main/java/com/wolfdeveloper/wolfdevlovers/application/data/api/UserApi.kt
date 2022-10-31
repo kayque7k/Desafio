@@ -3,6 +3,7 @@ package com.wolfdeveloper.wolfdevlovers.application.data.api
 import com.wolfdeveloper.wolfdevlovers.application.data.input.UserInput
 import com.wolfdeveloper.wolfdevlovers.application.data.response.UserResponse
 import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import retrofit2.http.*
 
 interface UserApi {

@@ -1,15 +1,7 @@
 package com.wolfdeveloper.wolfdevlovers.application.feature.detail
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -49,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.wolfdeveloper.wolfdevlovers.dsc.dimen.Weight
 
 @Composable
@@ -68,7 +61,7 @@ fun DetailPageScreen(
     Screen(
         uiState = viewModel.uiState,
         onClickMusic = {
-            viewModel.onClickMusic(activity = activity, url = it)
+            viewModel.onClickLink(activity = activity, url = it)
         },
         onClickClose = viewModel::onClickBack
     )
@@ -90,7 +83,9 @@ private fun Screen(
     if (uiState.item.collectAsState().value.imageBackground.isNotEmpty()) {
         Image(
             painter = rememberAsyncImagePainter(
-                uiState.item.collectAsState().value.imageBackground
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(uiState.item.collectAsState().value.imageBackground)
+                    .build()
             ),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
@@ -139,22 +134,14 @@ fun Header(
     onClickClose: () -> Unit,
 ) = Column(
     modifier = Modifier
-        .padding(
-            top = Size.Size24,
-            bottom = Size.Size4,
-            start = Size.Size16,
-            end = Size.Size16,
-        )
-        .fillMaxWidth(),
+        .padding(horizontal = Size.Size16).fillMaxWidth(),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 ) {
+    SpacerVertical(dp = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+    SpacerVertical(dp = Size.Size8)
     Row {
         IconButton(
-            modifier = Modifier
-                .padding(
-                    top = Size.Size32
-                ),
             onClick = onClickClose
         ) {
             Icon(
@@ -172,10 +159,7 @@ fun Header(
         if (uiState.item.value.cardsVO.firstOrNull()?.link.orEmpty().isNotEmpty()) {
             IconButton(
                 modifier = Modifier
-                    .padding(
-                        top = Size.Size32,
-                        start = Size.Size4
-                    ),
+                    .padding(start = Size.Size4),
                 onClick = {
                     onClickMusic.invoke(
                         uiState.item.value.cardsVO.firstOrNull()?.link.orEmpty()
